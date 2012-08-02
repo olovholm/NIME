@@ -5,7 +5,7 @@
 # Should implement a limitation on how much of the files which are printed. Should also look for formatting. 
 #
 # Alternative python pdf libraries: pyPdf, PDFMiner
-#
+# Tip from stackoverflow: https://code.google.com/p/pdfssa4met/
 
 
 import os
