@@ -1,4 +1,6 @@
 #!/usr/bin/python
+#-*- coding: utf-8
+
 
 #
 # This script runs through the pdf files in the nime2012 folder and tries to extact text from the pdf files. Text is written to screen.
@@ -9,6 +11,7 @@
 
 
 import os
+import re
 from pyPdf import PdfFileReader
 import subprocess
 
@@ -16,10 +19,10 @@ abstract_word = "abstract"
 introduction_word = {"intro", "introduction"}
 
 
+
 dir_path = "testfiles/"
 for infile in os.listdir(dir_path):
     workfile = dir_path + infile
-    #subprocess.call(['pdftotext', workfile, 'output'])
     input1 = PdfFileReader(file(workfile, "rb"))
     print "!!--- ARTICLE START ---!!"
     print "title = %s " % (input1.getNumPages)
@@ -27,4 +30,12 @@ for infile in os.listdir(dir_path):
     for i in range(0,pagenum):
         print "!!--- PAGE START: %i ---!!" % i
         fp = input1.getPage(0)
-        print fp.extractText()
+        text = fp.extractText()
+        prog = re.compile('(ABSTRACT)(.*)(INTRODUCTION )', flags=re.MULTILINE)
+        splits = re.findall(prog, text)
+        if len(splits) > 0:
+            print "Found %s " % splits
+        else:
+            print "Found nothing"
+    
+        
