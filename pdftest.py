@@ -20,22 +20,29 @@ introduction_word = {"intro", "introduction"}
 
 
 
-dir_path = "testfiles/"
+dir_path = "nime_archive/web/2008/"
 for infile in os.listdir(dir_path):
-    workfile = dir_path + infile
-    input1 = PdfFileReader(file(workfile, "rb"))
-    print "!!--- ARTICLE START ---!!"
-    print "title = %s " % (input1.getNumPages)
-    pagenum = (input1.getNumPages())
-    for i in range(0,pagenum):
-        print "!!--- PAGE START: %i ---!!" % i
-        fp = input1.getPage(0)
-        text = fp.extractText()
-        prog = re.compile('(ABSTRACT)(.*)(INTRODUCTION )', flags=re.MULTILINE)
-        splits = re.findall(prog, text)
-        if len(splits) > 0:
-            print "Found %s " % splits
-        else:
-            print "Found nothing"
+    if infile.endswith(".pdf"):
+        workfile = dir_path + infile
+        input1 = PdfFileReader(file(workfile, "rb"))
+        #print "!!--- ARTICLE START ---!!"
+        #try:
+            #print "title = %s " % (input1.getDocumentInfo())
+        #except Exception as e:
+           # print e
+        pagenum = (input1.getNumPages())
+        for i in range(0,pagenum):
+            #print "!!--- PAGE START: %i ---!!" % i
+            fp = input1.getPage(i)
+            text = fp.extractText().encode("UTF-8")
+            prog = re.compile('(abstract)(.*)(keywords)(.*)(.*INTRODUCTION.*)', flags=re.MULTILINE | re.IGNORECASE)
+            splits = re.findall(prog, text)
+            if len(splits) > 0:
+               # print "Found %s " % splits
+               print "Found %s" % infile
+            else:
+                if i == 0:
+                    print "Found nothing: %s" % infile
+            
     
         
