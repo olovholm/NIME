@@ -1,1 +1,4 @@
-COMMENTS GOES HERE 
+These files contains code extracting keywords and abstract from papers presented at the NIME conferences. 
+The Python based scripts tries to open the pdf files, then read them the text and the meta-data Pdf-destiller. 
+These data are then printed in a XML-stuctured document which is saved. 
+At one point these data should be fed into a bibtex-file.
