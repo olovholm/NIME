@@ -144,12 +144,13 @@ for folder in os.listdir(dir_path):
       if infile.endswith(".pdf"):
         workfile = dir_path + folder + "/"+ infile
         try:
-          input1 = PdfFileReader(file(workfile, "rb"))
+          inputfile = file(workfile, "rb")
+          input1 = PdfFileReader(inputfile)
           pdf = PdfDoc(input1, infile)
           pdf_array.append(pdf)
         except Exception as e:
           print "Could not open file: %s, %s" % (workfile,e)
-          break
+        inputfile.close()
 
           
 
