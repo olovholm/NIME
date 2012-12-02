@@ -119,26 +119,34 @@ for doc in documents:
     errors.write(missing_error)
     
   
-    #if abstract is present
-    if doc.extracted_abstract: 
+  #if abstract is present
+  if doc.extracted_abstract:
+    try:
       abstract = etree.Element('abstract')
       abstract.text = doc.abstract
       document.append(abstract)
-    else:
-      abstract_error = "\n--COULD NOT EXTRACT ABSTRACT--\n"
-      errors.write(abstract_error)
+    except ValueError:
+      xml_error = "\n --COULD NOT PRINT TEXT TO XML DUE TO VALUE ERROR -- \n"
+      doc.extracted_abstract = False
+      errors.write(xml_error)
+  else:
+    abstract_error = "\n--COULD NOT EXTRACT ABSTRACT--\n"
+    errors.write(abstract_error)
   
-    #if keywords are present
-    if doc.extracted_keywords:
-      keywords = etree.Element('keywords')
-      keywords.text = doc.keywords
-      document.append(keywords)
-    else: 
-      abstract_error = "\n--COULD NOT EXTRACT KEYWORDS--\n"
-      errors.write(abstract_error)
+  #if keywords are present
+  if doc.extracted_keywords:
+    keywords = etree.Element('keywords')
+    keywords.text = doc.keywords
+    document.append(keywords)
+  else: 
+    abstract_error = "\n--COULD NOT EXTRACT KEYWORDS--\n"
+    errors.write(abstract_error)
     
-      give_text = "HERE IS THE TEXT: \n %s \n\n -+-+-+-+-+-+-+- \n %s \n\n %s \n END OF %s\n\n\n" % (doc.text, doc.abstract, doc.keywords, doc.filename)
-      errors.write(give_text)
+      
+  #Prints the whole text to error log
+  if not doc.extracted_abstract or not doc.extracted_keywords: 
+    give_text = "HERE IS THE TEXT: \n %s \n\n -+-+-+-+-+-+-+- \n %s \n\n %s \n END OF %s\n\n\n" % (doc.text, doc.abstract, doc.keywords, doc.filename)
+    errors.write(give_text)
     
   # Appending the final document to the root
   root.append(document)

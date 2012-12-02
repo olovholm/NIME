@@ -1,0 +1,1561 @@
+
+ --COULD NOT PRINT TEXT TO XML DUE TO VALUE ERROR -- 
+HERE IS THE TEXT: 
+ 
+McBlare: A Robotic Bagpipe Player
+Roger B. Dannenberg, Ben Brown, Garth Zeglin, and Ron Lupish 
+
+Carnegie Mellon University 
+School of Computer Science 
+Pittsburgh, PA 15213 USA 
+
++1-412-268-3827 
+{rbd, hbb, garthz}@cs.cmu.edu
+
+ABSTRACT 
+McBlare is a robotic bagpipe player developed by the 
+Robotics Institute at Carnegie Mellon University. McBlare 
+plays a standard set of bagpipes, using a custom air 
+compressor to supply air and electromechanical “fingers” to 
+control the chanter. McBlare is MIDI controlled, allowing 
+for simple interfacing to a keyboard, computer, or hardware 
+sequencer. The control mechanism exceeds the measured 
+speed of expert human performers. On the other hand, 
+human performers surpass McBlare in their ability to 
+compensate for limitations and imperfections in reeds, and 
+we discuss future enhancements to address these problems. 
+McBlare has been used to perform traditional bagpipe 
+music as well as experimental computer generated music. 
+
+Keywords: bagpipes, robot, music, instrument, MIDI 
+
+1. INTRODUCTION 
+In 2004, Carnegie Mellon University’s Robotics Institute 
+celebrated its twenty-fifth anniversary. In preparing for the 
+event, it was suggested that the festivities should include a 
+robotic bagpiper as an entertaining acknowledgement of 
+Carnegie Mellon’s technical reputation and Scottish 
+connection.1 We set out to build a robotic system that could 
+play an ordinary, off-the-shelf traditional set of Highland 
+Bagpipes with computer control. The system is named 
+McBlare.  
+Mechanized instruments and musical robots have been 
+around for centuries. [6] Although early mechanical 
+instruments were usually keyboard-oriented, many other 
+electro-mechanical instruments have been constructed, 
+
+including guitars and percussion instruments. [7, 8, 10] 
+Robot players have also been constructed for wind 
+instruments including the flute [9] and trumpet [1, 11]. 
+We are aware of two other robotic bagpipe projects. Ohta, 
+Akita, and Ohtani [5] developed a bagpipe player and 
+presented it at the 1993 International Computer Music 
+Conference. In this player, conventional pipes are fitted to a 
+specially constructed chamber rather than using the 
+traditional bag. Their paper describes the belt-driven 
+“finger” mechanism and suggests some basic parameters as 
+a starting point for the design: 
+
+• 4 mm finger travel; 
+•  20 msec total time to open and close tone hole; 
+• 100 gf minimum closing force for tone holes. 
+
+ 
+
+Sergi Jorda also describes bagpipes used in his work, 
+consisting of single pitched pipes that can only be turned on 
+and off. [2] In a separate email communication, Jorda 
+indicated that “Pressure is very tricky” and may depend on 
+humidity, temperature and other factors. In contrast to 
+previous efforts, we decided to use off-the-shelf bagpipes to 
+retain the traditional bagpipe look and playing 
+characteristics. 
+Additional basic information was obtained by meeting with 
+Alasdair Gillies, CMU Director of Piping, and Patrick 
+Regan, a professional piper. We observed and videotaped 
+their playing and tried to learn what we could about the 
+instrument and playing techniques. From slow-motion video 
+(25% speed) we estimated the fastest fingering to be about 
+15 Hz. Required finger pressure on the chanter appeared to 
+be very light. We noted breathing cycle periods of about 4 
+seconds, and measured the time to exhaust the air from the 
+bag playing a low A: 12 seconds; and a high A: 8 seconds. 
+This gives a rough indication of the air flow requirement to 
+be between 0.045 and 0.07 cubic meters per minute (1.6 
+and 2.5 cubic feet per minute), based on a measured bag 
+volume of 0.0093 cubic meters (0.33 cubic feet). Alasdair 
+said he maintains a pressure of 32" water column (7.9 kPa 
+or 1.15 PSI) in the bag.  Soshi Iba, experienced piper and  
+then PhD candidate in Robotics, also provided substantial 
+input and was our primary test subject. 
+We give an overview of McBlare, beginning with a brief 
+description of bagpipes and how they work. There are two 
+
+ 
+
+Permission to make digital or hard copies of all or part of this work for 
+personal or classroom use is granted without fee provided that copies are 
+not made or distributed for profit or commercial advantage and that 
+copies bear this notice and the full citation on the first page. To copy 
+otherwise, or republish, to post on servers or to redistribute to lists, 
+requires prior specific permission and/or a fee. 
+Nime’05, May 26-28, , 2005, Vancouver, BC, Canada. 
+Copyright remains with the author(s). 
+ 
+
+ 
+
+Permission to make digital or hard copies of all or part of this work for 
+personal or classroom use is granted without fee provided that copies are 
+not made or distributed for profit or commercial advantage and that 
+copies bear this notice and the full citation on the first page. To copy 
+otherwise, or republish, to post on servers or to redistribute to lists, 
+requires prior specific permission and/or a fee. 
+Nime’05, May 26-28, , 2005, Vancouver, BC, Canada. 
+Copyright remains with the author(s). 
+ 
+
+__________________________ 
+
+1
+ Andrew Carnegie, who founded Carnegie Mellon (originally 
+the Carnegie Institute of Technology) was born in Scotland. 
+The University has an official tartan, the School of Music 
+offers a degree in bagpipe performance, and one of the student 
+ensembles is the pipe band. 
+
+ 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+80
+
+
+
+major robotic components of McBlare: the air supply, and 
+the chanter control, which are described in Sections 3 and 
+4. One of the major difficulties we encountered has been 
+properly setting up the bagpipes and coaxing them into 
+playing the full melodic range reliably. Section 5 reports on 
+our findings and current status. 
+
+2. Bagpipes 
+Bagpipes are some of the most ancient instruments, and 
+they exist in almost all cultures. There are many variations, 
+but the most famous type is the Highland Bagpipes (see 
+Figure 1), and this is the type played by McBlare. There are 
+three long, fixed pipes called drones. Two tenor drones are 
+tuned to the same pitch, which is traditionally called A, but 
+which is closer to B�4. The third drone (bass drone) sounds 
+an octave lower. Drones each use a single reed, 
+traditionally, a tongue cut into a tube of cane, more 
+recently, a cane or artificial tongue attached to a hollow 
+body of plastic or composite material. The fourth pipe is the 
+chanter, or melody pipe. The chanter is louder than the 
+drones and uses a double reed, similar in size to a bassoon 
+reed, but shorter in length and substantially stiffer.  Like a 
+basson reed, however, it is constructed around a small 
+copper tube, or “staple”.  
+
+ 
+
+Figure 1. Traditional Highland Bagpipes. 
+The chanter has sound holes that are opened and closed 
+with the fingers, giving it a range from G4 to A5 (as 
+written). All four pipes are inserted into the bag, a leather or 
+synthetic air chamber that is inflated by the player’s lung 
+power through a fifth pipe, or blowstick. This tube has a 
+one-way check-valve, so the player can take a breath while 
+continuing to supply air to the pipes by squeezing  the bag 
+under his or her arm to regulate pressure.  
+Reeds at rest are slightly open, allowing air to pass through 
+them. As pressure increases and air flow through the open 
+reed increases in response, the Bernoulli effect decreases 
+
+the pressure inside the reed, eventually causing the reed to 
+close. The resulting loss of airflow reduces the pressure 
+drop inside the reed, and the reed reopens. When things are 
+working properly, the pressure fluctuations that drive the 
+reed are reinforced by pressure waves reflected from the 
+open end of the pipe, thus the oscillation frequency is 
+controlled by the pipe length. The acoustic length of the 
+chanter is mainly determined by the first open sound hole 
+(i.e., the open sound hole nearest to the reed), allowing the 
+player to control the pitch. 
+
+Pressure regulation is critical. It usually takes a bit more 
+pressure to start the chanter oscillating (and more flow, 
+since initially, the reeds are continuously open). This initial 
+pressure tends to be around 8.3 kPa (1.2 pounds per square 
+inch). Once started, the chanter operates from around 5.5 to 
+8.3 kPa (0.8 to 1.2 psi). The drone reeds take considerably 
+less pressure to sound than does the chanter reed, and 
+drones operate over a wider pressure range, so it is the 
+chanter reed that determines the pressure required for the 
+overall instrument. Unfortunately, the chanter tends to 
+require lower pressure at lower pitches and higher pressure 
+at higher pitches. At the low pitches, too high a pressure 
+can cause the pitch to jump to the next octave or produce a 
+warbling multiphonic effect (sometimes referred to as 
+“gurgling”). If insufficient pressure is maintained on the 
+chanter reed for the higher pitches, it will cease vibrating. 
+Thus, there is a very narrow range in which the full range of 
+the chanter is playable at a fixed pressure. Furthermore, 
+pressure changes affect the chanter tuning (much more than 
+the drones), so the chanter intonation can be fine-tuned with 
+pressure changes.  Typically, this is not done; rather, 
+experienced pipers carefully attempt to adjust the stiffness 
+and position of the reed in the chanter so as to be able to 
+play the full 9-note range of the chanter with little or no 
+pressure variation. 
+In some informal experiments, we monitored air pressure 
+using an analog pressure gauge while an experienced player 
+performed. We observed that air pressure fluctuated over a 
+range from about 6.2 to 7.6 kPa (0.9 to 1.1 psi), with a 
+tendency to use higher pressure in the upper register. 
+Because of grace notes and some fast passages, it is 
+impossible to change pressure with every note, and we 
+speculate that the player anticipates the range of notes and 
+grace notes to be played in the near future and adjusts 
+pressure to optimize their sound and intonation. 
+Whether pressure should be constant or not is not well 
+understood. For example, Andrew Lenz’s “bagpipejourney” 
+web site described how to construct and use a water 
+manometer. He says “Theoretically you should be playing 
+all the notes at the same pressure, but it's not uncommon for 
+people to blow harder on High-A.” [3] 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+81
+
+
+
+3. The Air Supply 
+McBlare uses a custom-built air compressor. A 1/16 HP, 
+115VAC electric motor drives a gearbox that reduces the 
+speed to about 250 rpm. Two 76 mm (3”) diameter air 
+pump cylinders, salvaged from compressors for inflatable 
+rafts, are driven in opposition so that they deliver about 500 
+pump strokes per minute. (See Figure 2.) The radius of the 
+crank arm driving the cylinders is adjustable from 15 mm to 
+51 mm (0.6” to 2.0”); we found that the smallest radius 
+provides adequate air flow, calculated to be 0.034 cubic 
+meters per minute (1.2 cubic feet per minute).1 A small air 
+storage tank sits between the pump and the bagpipes. The 
+bagpipes are connected with a rubber hose that slips over 
+the same tube that a human performer would blow into. By 
+blowing in air more-or-less continuously, we can achieve a 
+fairly steady pressure without squeezing the bag. (Earlier 
+designs called for a mechanical “squeezer” but at 7 kPa (1 
+psi), a squeezer in contact with many square inches would 
+have to be very powerful, adding significantly to McBlare’s 
+weight and complexity.) 
+
+ 
+
+Figure 2. The McBlare air compressor. Electric motor (not 
+visible) drives eccentric (center) through a gearbox. Eccentric 
+drives two air pump cylinders (right and left) in opposition. 
+Pressure regulation is very simple at present. First, the 
+stroke length of the pump cylinders is adjustable to set the 
+flow rate just above what is needed by the bagpipes. 
+Second, a relief valve, which is simply a weighted plug, 
+vents high pressure (around 10 kPa or 1.5 psi) to prevent 
+over-pressure and avoid damaging the bagpipes.  A second 
+bleed valve can be adjusted to release air and lower the 
+pressure. 
+
+4. The Chanter Control 
+The chanter requires “fingers” to open and close sound 
+holes. Analysis of video indicates that bagpipers can play 
+sequences of notes at rates up to around 25 notes per 
+second. Human players can also uncover sound holes 
+slowly, partially, using either an up-down motion or a 
+sideways motion. The design for McBlare restricts 
+“fingers” to up-and-down motion normal to the chanter 
+
+                                                           
+
+1
+ This is less than the 0.045-0.07 cubic meters per minute based 
+on bag deflation measurements above. This may be due to 
+differences in instruments and/or measurement errors. 
+
+surface. Fortunately, this is appropriate for traditional 
+playing. The actuators operate faster than human muscles, 
+allowing McBlare to exceed the speed of human pipers. 
+McBlare’s “fingers” are modified electro-mechanical 
+relays. (See Figure 3.) Small coils pull down a metal plate, 
+which is spring loaded to return. Lightweight plastic tubes 
+extend the metal plate about 3 cm, ending in small rubber 
+circles designed to seal the sound hole. The length of travel 
+at the sound hole is about 2.5 mm, and the actuators can 
+switch to open or closed position in about 20 ms. The 
+magnet coils consume about 1 Watt each, enough to keep 
+the mechanism warm, but not enough to require any special 
+cooling. The magnet mechanism has the beneficial 
+characteristic that the finger force is maximum (around 100 
+gf) with the magnet closed, the point at which finger force 
+is needed for sealing the tone hole.  
+
+ 
+
+Figure 3. Chanter is mounted on aluminum block along with 
+electromagnetic coils that open and close sound holes using 
+rubber pads at the end of lightweight plastic tubes. 
+The whole “hand” assembly is designed to fit a standard 
+chanter, but the individual finger units can be adjusted 
+laterally (along the length of the chanter) and vertically. 
+The lateral adjustment accommodates variations in hole 
+spacing. The vertical adjustment is critical so that the 
+magnet closure point corresponds to the point of finger 
+closure. 
+The actuator current is controlled by a current driver IC, 
+which is in turn controlled by a microcontroller. The 
+microcontroller receives MIDI, decodes MIDI note-on 
+messages to obtain pitch, and then uses a table-lookup to 
+determine the correct fingering for that pitch. MIDI notes 
+outside of the bagpipe range are transposed up or down in 
+octaves to fall inside the bagpipe range. 
+
+5. Findings and Status 
+The chanter control works extremely well. The speed 
+allows for authentic-sounding grace notes and some very 
+exciting computer-generated sequences. In its original 
+configuration (see Figure 4), McBlare included a small 
+Yamaha hardware MIDI sequencer so that it could play 
+traditional tunes that we found on the web in the form of 
+standard MIDI files. We also developed a small laptop-
+based program to allow users to select and play a tune or to 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+82
+
+
+
+record and play a melody from a MIDI keyboard. A further 
+option can automatically ornament the recorded melody 
+using typical bagpipe figures that are automatically 
+extracted from our database of MIDI files. 
+
+ 
+
+Figure 4. Garth Zeglin with McBlare shortly before its debut 
+at the Robotics Institute’s Twenty-Fifth Annivesary. Bagpipes 
+are mounted on a display board that conceals the pump and 
+additional electronics. 
+The use of MIDI control makes it possible to adapt all sorts 
+of controllers to McBlare, including keyboards (which are 
+very useful for experimentation), novel sensors, or even 
+MIDI bagpipe controllers. [4] For now, the bagpipes 
+themselves are so captivating that we have not pursued the 
+use of special controllers. Since bagpipes have no control 
+over dynamics, pitch is really the only controllable 
+parameter. Therefore, any bagpipe interface should be 
+particularly agile as a pitch controller.  
+As might be expected, there is considerable mechanical 
+noise generated by the air compressor. In addition, the 
+electro-mechanical chanter “fingers” make clicking sounds. 
+However, the chanter is quite loud, and few people notice 
+the noise once the chanter begins sounding. 
+Under ideal conditions, McBlare can play sequences 
+covering the full range of pitches from G4 to A5. More 
+typically, however, the lowest two notes do not cooperate at 
+the pressures needed to sustain oscillation at the top end of 
+the range. We suspect a number of factors are causing 
+difficulties. First, chanter reeds are very delicate and 
+problematic even for human players. They are made from 
+natural cane and take time to adjust and break in. McBlare’s 
+reeds seem to be drying out in the dry compressed air. 
+Second, the pump does not deliver absolutely steady air 
+pressure, and sometimes a very slight modulation can be 
+
+heard that matches the pump frequency. Third, we have no 
+dynamic control over pressure, whereas the lowest notes 
+can often be brought under control if the pressure is 
+lowered. 
+
+6. Future Work 
+We intend to explore options for chanter reeds, including 
+artificial reeds, adding a humidifier to the pump input to 
+prevent reeds from drying out during performances, and 
+regulating the air pressure to avoid fluctuations caused by 
+piston strokes. Recent experiments with human lung power 
+providing steady pressure indicate that pressure regulation 
+is needed. As a last resort, we might control air pressure via 
+MIDI to coax less-than-ideal reeds into sounding over their 
+full range. One possibility is to adapt a standard gas 
+pressure regulator with a servo motor to change the 
+pressure setting. Further experiments and measurements of 
+expert pipers should tell us whether this is really necessary. 
+An automated “arm” to squeeze the bag is still a possibility, 
+and could provide some interesting control aspects to the 
+problem.  
+Since the chanter pitch can be adjusted with air pressure, 
+with minimal effect on the drone pitch, there is the 
+possibility of tuning the bagpipes by capturing the chanter 
+and drone audio on separate channels, analyzing their 
+fundamental frequencies, and then adjusting pressure to 
+bring the chanter reed in tune. Again, this practice is 
+frowned upon by experts, so we need to conduct further 
+observations and experiments to determine whether 
+pressure changes are really necessary. 
+Once the basics are under complete control, there are some 
+finer points of piping to consider. One is the fact that 
+humans can cover tone holes partially to achieve pitch 
+bending effects. We chose to ignore this possibility, which 
+would greatly complicate the design and which is not 
+required for most performances. However, a design that 
+allows for pitch bends, either using tone holes—or perhaps 
+a radical change such as a telescoping chanter or slide-
+whistle-like piston—could offer many new interesting 
+musical possibilities. 
+
+7. ACKNOWLEDGEMENTS 
+The School of Computer Science, which includes the 
+Robotics Institute, supported this work by providing funds 
+for equipment and purchasing bagpipes. Three of the 
+authors received support from the Robotics Institute and the 
+Department of Computer Science. We thank Alasdair 
+Gillies, Patrick Regan, and Soshi Iba, and Marek 
+Michalowski for teaching us about the bagpipe and being 
+subjects for our tests; and Carl Disalvo for helping with 
+McBlare’s aesthetics. Thanks to Ivan Sutherland for 
+suggesting the concept initially.  
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+83
+
+
+
+8. REFERENCES 
+ 
+
+[1] BBC News UK Edition. Robot trumpets Toyota's 
+know-how, BBC, http://news.bbc.co.uk/1/hi/ 
+technology/3501336.stm (accessed April 2005), 2004. 
+
+[2] Jorda, S. Afasia: the Ultimate Homeric One-man-
+multimedia-band. In Proceedings of New Interfaces 
+for Musical Expression, (Dublin, Ireland, 2002), 
+2002. 
+
+[3] Lenz, A. Andrew's Tips: Making a Water Manometer, 
+http://www.bagpipejourney.com/articles/ 
+manometer.shtml (accessed April 2005), 2004. 
+
+[4] Music Thing. Burns Night Special: MIDI Bagpipes 
+are everywhere!, http://musicthing.blogspot.com/ 
+2005/01/burns-night-special-midi-bagpipes-are.html 
+(accessed April 2005), 2005. 
+
+[5] Ohta, H., Akita, H. and Ohtani, M. The Development 
+of an Automatic Bagpipe Playing Device. In 
+Proceedings of the 1993 International Computer 
+Music Conference, (Tokyo, Japan, 1993). 
+International Computer Music Association, San 
+Francisco, 1993, 430-431. 
+
+[6] Roads, C. Sequencers: Background. in The Computer 
+Music Tutorial, MIT Press, Cambridge, 1996, 662-
+669. 
+
+[7] Sekiguchi, K., Amemiya, R. and Kubota, H. The 
+Development of an Automatic Drum Playing Device. 
+In Proceedings of the 1993 International Computer 
+Music Conference, (Tokyo, Japan, 1993). 
+International Computer Music Association, San 
+Francisco, 1993, 428-429. 
+
+[8] Singer, E., Larke, K. and Bianciardi, D. LEMUR 
+GuitarBot: MIDI Robotic String Instrument. In 
+Proceedings of the 2003 International Conference on 
+New Interfaces for Musical Expression (NIME-03), 
+(Montreal, 2003). McGill University, 2003, 188-191. 
+
+[9] Takanishi, A. and Maeda, M. Development of 
+Anthropomorpic Flutist Robot WF-3RIV. In 
+Proceedings of the 1998 International Computer 
+Music Conference, (Ann Arbor, MI, 1998). 
+International Computer Music Association, San 
+Francisco, 1998, 328-331. 
+
+[10] Tosa, N. The Nonsense Machines. Maywa Denki, 
+Japan, 2004. 
+
+[11] Vergez, C. and Rodet, X. Comparison of Real 
+Trumpet Playing, Latex Model of Lips and Computer 
+Model. In 1997 International Computer Music 
+Conference, (Thessaloniki, Greece, 1997). 
+International Computer Music Association, San 
+Francisco, 1997, 180-187. 
+
+ 
+
+ 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+84
+
+
+ 
+
+ -+-+-+-+-+-+-+- 
+  
+McBlare is a robotic bagpipe player developed by the 
+Robotics Institute at Carnegie Mellon University. McBlare 
+plays a standard set of bagpipes, using a custom air 
+compressor to supply air and electromechanical “fingers” to 
+control the chanter. McBlare is MIDI controlled, allowing 
+for simple interfacing to a keyboard, computer, or hardware 
+sequencer. The control mechanism exceeds the measured 
+speed of expert human performers. On the other hand, 
+human performers surpass McBlare in their ability to 
+compensate for limitations and imperfections in reeds, and 
+we discuss future enhancements to address these problems. 
+McBlare has been used to perform traditional bagpipe 
+music as well as experimental computer generated music. 
+
+ 
+
+  bagpipes, robot, music, instrument, MIDI    
+ END OF nime_archive/web/2005/nime2005_080.pdf
+
+
+
+ --COULD NOT PRINT TEXT TO XML DUE TO VALUE ERROR -- 
+HERE IS THE TEXT: 
+ 
+Voice-controlled plucked bass guitar through two
+synthesis techniques
+
+Jordi Janer
+IUA-MTG
+
+Universitat Pompeu Fabra
+Barcelona
+
+jjaner@iua.upf.es
+ABSTRACT
+In this paper we present an example of the use of the singing
+voice as a controller for digital music synthesis. The analy-
+sis of the voice with spectral processing techniques, derived
+from the Short-Time Fourier Transform, provides ways of
+determining a performer’s vocal intentions. We demonstrate
+a prototype, in which the extracted vocal features drive the
+synthesis of a plucked bass guitar. The sound synthesis stage
+includes two different synthesis techniques, Physical Models
+and Spectral Morph.
+
+Keywords
+Singing voice, musical controller, sound synthesis, spectral
+processing.
+
+1. INTRODUCTION
+Digital music synthesis allows a wide range of sounds and
+
+permits a high degree of control over the sound generation
+process. It overcomes physical (in acoustic instruments) or
+electronic (analog synthesizer) limitations in terms of con-
+trol. The flexibility of control has led to the emergence of
+numerous musical controllers, more innovative than the tra-
+ditional keyboard approach, ranging from accelerometers to
+video cameras. The captured data is then converted to some
+protocol that controls the synthesis engine. Traditionally,
+this protocol was MIDI, but Open Sound Control (OSC) is
+gaining more and more acceptance in the Computer Music
+community, as well as in the industry.
+
+Singing voice qualities have been exploited in the history
+of music since ancient times. The emotion transmitted by
+an opera singer is indubitable, probably due to the fact that
+the voice is per se an organic musical instrument. It is not
+the aim of this paper to study in detail the characteristics
+and qualities of the singing voice as a musical instrument.
+Rather, we address the high degree of expression and the
+nuances of the singing voice in order to exploit it as a musical
+controller. Music Technology has tackled the singing voice
+
+Permission to make digital or hard copies of all or part of this work for
+personal or classroom use is granted without fee provided that copies are
+not made or distributed for profit or commercial advantage and that copies
+bear this notice and the full citation on the first page. To copy otherwise, to
+republish, to post on servers or to redistribute to lists, requires prior specific
+permission and/or a fee.
+NIME’05, May 26-28, 2005, Vancouver, BC, Canada. Copyright remains
+with the author(s).
+
+mainly from the analysis / synthesis perspective, putting
+efforts in “inventing” a computer that sings as a human.
+Another topic, in which the singing voice is involved, is score
+following systems [12].
+
+1.1 Voice as a Controller
+In the work presented here, the singing voice acts as a
+
+controller. The system examines the characteristics of the
+captured acoustical signal, which at its turn, drives the pa-
+rameters of a synthesis engine. Other approaches of “sound-
+controlled sound synthesis” are found in the literature. Tris-
+tan Jehan [8] presents a system developed at MIT which
+uses the timbre characteristics of a continuous input stream
+to recreate the output with characteristics of another pre-
+analyzed instrument. In another approach by Miller Puck-
+ette et al. [13], the goal is to map a low-parametric timbre
+space of an input audio stream onto a pre- analyzed out-
+put audio stream in real-time. Also related to this work,
+we should include PitchToMidi systems, which were first
+introduced in the 80’s as hardware devices. For our pur-
+poses, though, MIDI presents mainly two limitations. First,
+it is an event-based protocol, and the voice -as many other
+instruments- varies its sounds in a continuous manner. Sec-
+ond, the available bandwidth offers an insufficient time res-
+olution.
+
+The plucked bass guitar is, in terms of timbre complex-
+ity, simpler than other solo instruments such as a violin or
+a trumpet. This simplicity let us focus on basic control as-
+pects. Furthermore, we want to stress that the goal of the
+presented work is not to build an accurate bass guitar syn-
+thesizer, but rather to explore the possibilities of the voice
+driven synthesis.
+
+2. VOICE FEATURE EXTRACTION
+The first step before using the voice as a controller is to
+
+decide which features we want to extract. It is obvious that
+even a naive user can control efficiently the phonatory sys-
+tem, producing a wide range of sounds. Actually, the sim-
+ple action of speaking involves continuous variations of the
+breathing pressure, vocal folds tension or tongue position, to
+name a few. The chosen features include basic attributes,
+such as pitch and energy, in addition to other timbre de-
+scriptors.
+
+2.1 Voice Processing techniques
+Several techniques have been developed over the years to
+
+study the human voice. Most research is related to the
+field of speech processing, but the study of the singing voice
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+132
+
+
+
+has brought also additional approaches. Basically, all these
+methods, though, rely on the source/filter approach, in which
+the phonatory system is seen as a coupled excitation (mod-
+ulated air-flow) and a resonator (vocal tract cavity).
+
+In this work we use a Phase-Vocoder based method for
+voice analysis and also for the spectral morph synthesis. The
+Phase Vocoder was first developed by Flanagan [4] in 1966
+at Bell Laboratories, and was used for speech processing.
+Later, in its FFT form was brought to musical applications
+by J.A. Moore and M. Dolson. M. Puckette proposed the
+Phase-Locked Vocoder [11], which introduces phase- locking
+between adjacent pairs of FFT channels. A further step in
+the Phase-vocoder development is the new algorithm pro-
+posed by J. Laroche in [10]. This technique allows direct
+manipulation of the signal in the frequency domain. Some
+of the application are pitch-shifting, chorusing and harmo-
+nizing. The underlying idea behind the algorithm is to iden-
+tify peaks in the Sort-Time Fourier Transform, and translate
+them to new arbitrary frequencies of the spectrum. Here,
+the spectrum is divided in several regions around peaks.
+
+This technique was integrated in the Spectral Peak Process-
+ing (SPP) framework [1] by Bonada and Loscos. It performs
+a frame based spectral analysis of the audio, giving as output
+of the STFT, the harmonic peaks and the pitch, as depicted
+in figure 1. For the pitch detection, we used the technique
+developed by Cano et al. described in [2]. Basically, the SPP
+considers the spectrum as a set of regions, each of which be-
+longs to one harmonic peaks and its surroundings. The main
+goal of such technique is to preserve the local convolution
+of the analysis window after transposition and equalization
+transformations. Common transformations include pitch-
+shift and equalization (timbre modification).
+
+Figure 1: SPP Analysis process.
+
+2.2 Set of extracted features
+Essentially, vocal gestures can be of three different kind in
+
+the voice production mechanism, depending on whether its
+origin is either in the breathing system (subglottal pressure),
+glottis (glottis settings), or in the vocal tract (vocal tract
+shape). In this approach, we propose the following classi-
+fication based on control aspects: Excitation, Vocal Tract,
+Voice Quality and Context.
+
+A more detailed description of the feature extraction algo-
+rithms, which derive from the SPP Analysis, appears in an
+article by the author [7]. Excitation descriptors are elemen-
+tal for the user, since they are related to the instantaneous
+sung energy and fundamental frequency. In a further step,
+we find the voice colour or voice timbre. For voiced sounds,
+the timbre is associated to a particular vowel. We assume
+that a vowel can approximately determined by its two first
+formant frequencies. A very simple algorithm based on spec-
+tral centroid, will estimate these frequencies approximately.
+In addition to the introduced features, two algorithms esti-
+mating Voice Quality were developed. Although these two
+algorithms need further research, it is a good start-point
+for controlling other aspects of the output sound. Finally,
+
+we include the Context features, which includes the “At-
+tack unvoiceness” descriptor. Assuming that a note consists
+of a pitched sound, this descriptor attempts to determine
+whether the attack of the note was unvoiced or not. The
+initial motivation for this descriptor is to use it for deter-
+mining the harshness of the synthesized note’s attack. In
+our case of a bass guitar, it might be related to the differ-
+ences between a soft fingered and a sharp slap electric bass.
+
+3. PLUCKED-BASS GUITAR SYNTHESIS
+The sound of a plucked bass guitar consists of impulsive
+
+notes that decay exponentially in time. Due to the long note
+decay time, bass players usually damp the vibrating string
+with the finger before plucking a new note. In the previous
+section we have proposed a set of attributes that derive from
+a spectral analysis of the voice signal, which delivers infor-
+mation at a given frame rate. Making an analogy, we could
+handle this information as it would come from other multi-
+parametric sensors such as a body- gesture device that sends
+tracking information continuously. On the other hand, as
+pointed out in the literature [5], the design of digital musical
+instruments involves a very important layer, the Mapping.
+We propose a general model valid for different instruments,
+as well as different synthesis techniques. Regarding the syn-
+thesis process, in the system here implemented we aimed
+to compare two dissimilar techniques, Physical Models and
+Spectral Morph.
+
+3.1 Mapping issues
+Once we have the input parameters available, the next
+
+task is to set up a meaningful strategy to link these para-
+meters to controls of the synthesis algorithms. This action
+is commonly known as mapping. Although, here we present
+the synthesis of a single instrument, the bass guitar, it is part
+of a more general research on voice-controlled virtual instru-
+ments. In this sense, we propose a general model of mapping
+that can deal with different instruments and different syn-
+thesis techniques. The figure 2 shows the mapping process
+in which a first layer deals with the synthesized instrument,
+and a second layer that is connected to the synthesis engine.
+In the table 1, we justify this concept with some examples.
+
+Instrument dependency
+
+Pitch
+Tessitura (bass vs. violin)
+Pitch deviations (violin vs. piano)
+
+Volume
+Continuous (flute)
+Impulsive (plucked guitar)
+
+Timbre variations
+Instantaneous (piano attack)
+Continuous (violin)
+
+Synthesis technique dependency
+
+Simple oscillator frequency and amplitude
+Physical Models Length, Excitation force,
+
+Air-flow pressure, etc.
+Spectral Models Sinusoidal partials amplitude
+
+and frequency, etc.
+
+Table 1: The Mapping layer consists of two sub-
+
+layers, which adapt the input parameters depend-
+
+ing on the instrument sound and the synthesis tech-
+
+nique.
+
+In our case, the instrument dependent mapping is unique,
+since only one instrument is considered. From the Energy
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+133
+
+
+
+Figure 2: The mapping of the voice features is a two-
+
+step process: Instrument dependant and synthesis
+
+technique dependant
+
+feature, we defined a note onset signal that triggers a note
+depending on the energy’s derivative. The Pitch feature
+is transposed one octave lower and passed as continuous
+parameter, thus allowing pitch deviations. A quantization
+function for simulating the influence of the frets is foreseen,
+but not yet integrated in the current implementation.
+
+3.2 Adapting the Karplus-Strong String Algo-
+rithm
+
+This algorithm was invented by Kevin Karplus and Alex
+Strong, and was published in the Computer Music Journal
+in 1983 [9]. The success of such algorithm lies in its low-
+computational cost, which allowed at that time to synthesize
+in real-time a plucked-guitar with a substantial quality with
+cheap processors. It is worth to mention that in 1983 the
+first PCs were introduced; and the digital music synthesis in
+real-time required large and expensive computers only found
+in big research centres.
+
+Although we have mentioned here Physical Models, orig-
+inally this algorithm was based on the Wavetable Synthesis
+technique, which repeats number of samples generating a
+periodic signal. Instead, the Karplus-Strong algorithm in-
+troduces a variation by averaging two successive samples
+Yt = (Yt−N + Yt−N−1)/2, and writing the resulting sample
+in the wavetable. This can be seen, thus, as a delay line
+with length N . It simulates a rigidly terminated string with
+losses, generating a periodic sound with decay. The delay
+line is initialized with random values (+A/-A) for simulating
+the plucking action. The pitch is determined by the length
+of the delay line. At CCRMA, researchers experimented si-
+multaneously with the Karplus-Strong algorithm, proposing
+some extensions, and analyzing it in terms of a digital fil-
+ter. The extensions developed by D. Jaffe and J.O. Smith
+[6] overcame several limitations of the original algorithm.
+
+We adapted this algorithm in order to be controllable by
+the voice, as depicted in the figure 3. Unlike the original
+algorithm, in which the delay line is filled by noise, we feed
+the Karplus-Strong delay line with the transient (attack) of
+
+Figure 3: Bass synthesis with Physical Modelling.
+
+The input voice is used as excitation signal for the
+
+Karplus-Strong algorithm.
+
+the sung note. Good results were achieved by attacking a
+note with a short impulsive consonant. In our bass syn-
+thesizer system, the implementation of the Karplus-Strong
+Algorithm is taken from the STK Library [3]. From the
+first mapping sublayer, we get the triggering signal, which
+is related to the energy envelope of the user’s voice, and the
+estimated pitch. When the trigger is active, N samples of
+the input voice passes through and fill the delay line. The
+actual size of the delay line (N) is determined by the esti-
+mated pitch.
+
+During the design process, we noticed that sample contin-
+uation problems appeared in form of “clicks” in the output
+waveform, when changing from one note to another. This is
+caused while a note is still fading out, and a new excitation
+signal is fed into the delay line. In order to minimize this
+effect, we introduce a second string in our model. The trig-
+gering stage send the excitation signal alternatively to one
+of the two strings, sounding more natural.
+
+3.3 Spectral Morph algorithm
+Our Spectral Model approach combines a sample-based
+
+synthesis with transformations, based in the Spectral Peak
+Processing (see section 2.1). A particularity of our sample-
+based algorithm is that it works in the frequency domain.
+Basically, depending on the input voice’s parameters, a sound
+template track is selected from the database. Each template
+track contains all spectral frames from a single note. Then,
+we read sequentially the spectral frames and apply some
+transformations. Finally, the processed spectral frames are
+converted to time domain through the inverse Fourier trans-
+form.
+
+Figure 4: The voice features select a track from the
+
+database. The stored track’s spectral frames are
+
+transformed and finally converted to the time do-
+
+main.
+
+For our bass synthesizer implementation, we set up a very
+small database consisting of 12 template tracks (one note
+sample), considering two playing techniques. The tracks
+are analyzed off-line in the spectral domain, and stored in
+the database in form of binary files containing spectral data
+(complex spectrum, harmonic peaks, estimated pitch, etc.).
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+134
+
+
+
+All tracks have been labelled by hand according to its char-
+acteristics. Currently, only three features were annotated:
+Pitch, Dynamics andAttack Type. The pitch values are spec-
+ified in Hz, Dynamics and Attack Type range is [0..1]. In
+the case of Dynamics, 0 corresponds to a pp sound, and 1
+to a ff. The attack type is instrument dependant. Concern-
+ing bass sounds, we decided to classify two types of sounds
+depending on the plucking technique soft fingered or slap.
+
+Regarding the mapping for the spectral morph model al-
+gorithm, a retrieval method calculates the minimum Euclid-
+ean distance between the Input Vector (Pitch, Loudness and
+Attack Unvoiceness) and the database elements. In a fur-
+ther step, we start reading the spectral frame of the selected
+track. Since we are dealing with a very small database, few
+combination of loudness and pitches are available. There
+are two types of transformations: transposition and gain.
+
+Another factor that must be taken into account is the
+timing. The pre-analyzed template tracks have a certain
+duration, a certain number of spectral frames. In our sys-
+tem, though, the performer’s voice controls the synthesized
+sound. Hence, is the input voice which decides the output
+duration. We mark manually a sustain point (frame). After
+a note is triggered, we read frame by frame until the sus-
+tain frame is reached. Then, this frame is read repeatedly,
+considering phase continuation, until the user releases” the
+sung note. During the sustain, pitch bend can occur. and
+only one note sample is read from the database at a given
+time.
+
+3.4 Implementation description
+The proposed system was implemented as a stand-alone
+
+C++ application running in real time on a off-the-shelf com-
+puter. We used the CLAM 1 development framework, and
+the PortAudio2 library for the audio interface along with
+ASIO3 drivers. The internal algorithms parameters were:
+windowsize = 2048, and hopsize = 256. The real mini-
+mum latency of our set up (virtual audio wire) was 11ms.
+For the Physical Modelling approach, we observed a latency
+of 26 ms. In the Spectral Morph technique, the latency
+raises up to 34ms. Note that the latency in the latter case
+is increased due to the FFT and IFFT process, in which a
+latency of half window size is unavoidable.
+
+4. CONCLUSIONS
+The achieved results showed that, in terms of computa-
+
+tion requirements, such a system can be utilized as a virtual
+instrument in a real-time performance situation. Neverthe-
+less, this first approach is still limited in terms of musical
+control, and therefore needs further development. Among
+the two synthesis techniques integrated, Physical Models has
+in this case much less computational and memory cost than
+the Spectral Morph approach. The quality of the synthesized
+sound, a plucked bass guitar, is in both techniques accept-
+able. However, since we plan to extend this system to other
+musical instruments, Physical Modelling technique requires
+for each instrument a completely different algorithm, which
+implies extra design effort. Instead, the Spectral Morph ap-
+proach is more scalable, in which adding new instruments
+
+1http://www.iua.upf.es/clam
+2http://www.portaudio.com/
+3Audio Stream I/O (ASIO) is trademark of Steinberg,
+GmbH.
+
+requires only to provide a set of recorded note samples to
+the database, and to adapt the mapping layer.
+
+5. ACKNOWLEDGMENTS
+This research has been partially funded by the EU-FP6-
+
+IST- 507913 project SemanticHIFI.
+
+6. REFERENCES
+[1] J. Bonada and A. Loscos. Sample-based singing voice
+
+synthesizer by spectral concatenation. In Proceedings
+of Stockholm Music Acoustics Conference 2003,
+Stockholm, Sweden, 2003.
+
+[2] P. Cano. Fundamental frequency estimation in the
+SMS analysis. In Proceedings of COST G6 Conference
+on Digital Audio Effects 1998, Barcelona, 1998.
+
+[3] P. Cook and G. Scavone. The Synthesis Toolkit
+(STK). http://ccrma-www.stanford.edu/software/stk.
+
+[4] J. Flanagan and R. Golden. Phase vocoder. Bell
+Systems Technology Journal, 45:1493–1509, 1966.
+
+[5] A. Hunt, M. Wanderley, and M. Paradis. The
+importance of mapping in electronic instruments
+design. In Proceedings of the Conference on New
+Instruments for Musical Expression NIME, Dublin,
+Ireland, 2002.
+
+[6] D. Jaffe and J. Smith. Extensions on the
+Karplus-Strong plucked-string algorithm. Computer
+Music Journal, 7(2):56–69, 1983.
+
+[7] J. Janer. Feature extraction for voice- driven
+synthesis. In 118th AES Convention, Barcelona, 2005.
+
+[8] T. Jehan. Perceptual Synthesis Engine: An
+Audio-Driven Timbre Generator, 2001.
+
+[9] K. Karplus and A. Strong. Digital synthesis of
+plucked-string and drum timbres. Computer Music
+Journal, 7(2):43–55, 1983.
+
+[10] J. Laroche and M. Dolson. New Phase-vocoder
+techniques for pitch-shifting, harmonizing and other
+exotic effects. In Proceedings of IEEE Workshop on
+Applications of Signal Processing to Audio and
+Acoustics, New Paltz, New York, 1999.
+
+[11] M. Puckette. Phase-locked vocoder. In Proceedings of
+IEEE Workshop on Applications of Signal Processing
+to Audio and Acoustics, Mohonk, New York, 1995.
+
+[12] M. Puckette. Score folowing using the sung voice. In
+Proceedings, International Computer Music
+Conference, San Francisco, 1995.
+
+[13] M. Puckette. Low-dimensional parameter mapping
+using spectral envelopes. In Proceedings, International
+Computer Music Conference, Miami, 2004.
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+135
+
+
+ 
+
+ -+-+-+-+-+-+-+- 
+ 
+In this paper we present an example of the use of the singing
+voice as a controller for digital music synthesis. The analy-
+sis of the voice with spectral processing techniques, derived
+from the Short-Time Fourier Transform, provides ways of
+determining a performer’s vocal intentions. We demonstrate
+a prototype, in which the extracted vocal features drive the
+synthesis of a plucked bass guitar. The sound synthesis stage
+includes two different synthesis techniques, Physical Models
+and Spectral Morph.
+
+ 
+
+  Singing voice, musical controller, sound synthesis, spectral processing.   
+ END OF nime_archive/web/2005/nime2005_132.pdf
+
+
+
+-- SOMTEHING IS MISSING--
+ IN FILE: nime_archive/web/2005/nime2005_160.pdf 
+
+--COULD NOT EXTRACT KEYWORDS--
+HERE IS THE TEXT: 
+ 
+Sustainable: a dynamic, robotic, sound installation 
+David Birchfield 
+
+Arts, Media and Engineering 
+Arizona State University 
+
+Tempe, AZ 85287 
+1.480.965-3155 
+
+dbirchfield@asu.edu 
+
+David Lorig 
+Arts, Media and Engineering 
+
+Arizona State University 
+Tempe, AZ 85287 
+1.480.965-3155 
+
+david.lorig@asu.edu 
+
+Kelly Phillips 
+Arts, Media and Engineering 
+
+Arizona State University 
+Tempe, AZ 85287 
+1.480.965-3155 
+
+crowbar@asu.edu 
+ 
+ 
+
+ABSTRACT 
+This paper details the motivations, design, and realization of 
+Sustainable, a dynamic, robotic sound installation that employs a 
+generative algorithm for music and sound creation.  The piece is 
+comprised of seven autonomous water gong nodes that are 
+networked together by water tubes to distribute water throughout 
+the system.  A water resource allocation algorithm guides this 
+distribution process and produces an ever-evolving sonic and 
+visual texture.  A simple set of behaviors govern the individual 
+gongs, and the system as a whole exhibits emergent properties 
+that yield local and large scale forms in sound and light. 
+
+Keywords 
+Music, Sound, Robotics, Generative Arts, Evolutionary 
+Computing, Dynamic Systems, Sculpture, Installation Art. 
+
+1. INTRODUCTION 
+Sustainable, is a dynamic, autonomous, robotic installation that is 
+comprised of a network of seven independent water gongs (see 
+Fig. 1).  The network models a water resource allocation 
+algorithm that yields a perpetual evolution of the sonic, visual, 
+and timbral aspects of the installation.  Each gong node functions 
+independently and autonomously, but through their simple 
+interactions, the system as a whole exhibits dynamic, emergent 
+behaviors that unfold over time. 
+ 
+
+A water gong is a musical gong that is dipped into a tank of water.  
+As the gong is partially submersed, the water alters the resonant 
+properties of the metal such that the sounding frequency of the 
+gong descends as it is immersed below the water’s surface.  This 
+instrumental effect is employed by composers of contemporary 
+music, as it’s shifting glissandi and timbres produces an intriguing 
+and distinct sound.   
+
+ 
+Fig. 1. Portion of the gong network 
+
+We have built a collection of robotic water gongs, each with two 
+solenoid beaters that strike a gong that is fixed above a water tank.  
+Rather than raising and lowering the gong itself, we raise and 
+lower the water level in the tank with water pumps to produce the 
+desired effect.  Lamps positioned below the transparent tanks 
+illuminate patterns on the surface of the water as it ripples and 
+splashes.  Each gong has one upstream and one downstream 
+neighbor, and the gongs are networked together with water tubes.  
+Thus, water is distributed throughout the system, and as the gongs 
+resonate above the ever shifting water levels, chords and rhythms 
+emerge that reflect the state of the population.  A water resource 
+sharing algorithm governs the global behavior of the system, and 
+each water gong node is modeled as a water consumer with 
+individual needs and behaviors. 
+ 
+This paper describes the goals and outcomes of the design and 
+realization of this work. In Section 2 we outline the important 
+themes and concepts that inform the aesthetic aspects of the work.  
+Section 3 discusses the generative algorithm that governs the 
+system.  In Section 4 we describe the construction and behaviors 
+of the individual gongs.  Finally we discuss the results of this 
+work, and outline directions for future work. 
+
+2. KEY THEMES AND CONCEPTS 
+A number of themes and concepts inform the design and 
+realization of this installation.  These concepts are reflected in the 
+sonic and visual materials that comprise the piece, and in the 
+technologies and algorithms that influence its behavior. 
+
+Permission to make digital or hard copies of all or part of this work for 
+personal or classroom use is granted without fee provided that copies are 
+not made or distributed for profit or commercial advantage and that 
+copies bear this notice and the full citation on the first page. To copy 
+otherwise, or republish, to post on servers or to redistribute to lists, 
+requires prior specific permission and/or a fee. 
+Nime’05, May 26-28, , 2005, Vancouver, BC, Canada. 
+Copyright remains with the author(s). 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+160
+
+
+
+ 
+Water is an important force and metaphor.  As residents of the 
+western United States, where water rights and access are critically 
+important, we are driven to address this issue in our work.  The 
+implementation of a real world water resource-sharing algorithm 
+reflects this influence.  In addition, the network of water gongs 
+share a limited resource of water, and its perpetual re-allocation 
+between the members of the system models the shifts of natural, 
+cultural, and intellectual resources throughout the networks of our 
+local and global communities.  The installation is intended to 
+highlight the interconnected nature of our social and physical 
+environments.  Finally, water serves as the means of 
+communication between nodes in the network.  This anachronistic 
+mechanism references the use of waterways as the traditional 
+vehicle for communication and transportation. 
+ 
+
+We explore the relationship between organic materials and 
+technology in robotics, and seek to balance these forces in the 
+piece.  An important design principle for the work is that the 
+technology should be downplayed rather than fetish-ized. This 
+concept informs the decision to have the sound and sonic events 
+originate from 'natural' (e.g., striking the physical gongs) and not 
+electronic sources. Similarly, the technology is present in the 
+background of the piece, thus allowing the audience to focus on 
+the organic aspects of the work.  The use of organic materials as 
+core components of the evolutionary algorithm also introduces 
+desirable irregularities that often yield interesting and compelling 
+results as in biological evolutionary systems. 
+ 
+The evolution of sonic and visual materials addresses the passage 
+of time on multiple levels.  Through the influence of the 
+evolutionary model, shifts in texture and sound unfold at a gradual 
+rate.  At the local level, viewers of the piece can experience 
+transitions by focusing their attention on the actions of individual 
+water gongs.  At the global level, viewers can appreciate the more 
+gradual sonic and visual transitions of the system as activity and 
+textures will shift around the network, and diverse composite 
+sonorities will emerge.  In addition, the generative algorithm 
+produces alternating modes of stability and instability that yield 
+large-scale meta-pulses in the resulting sound. 
+
+3. DYNAMIC SYSTEM BEHAVIOR 
+Sustainable is influenced by related works in both music and the 
+visual arts that utilize models of natural dynamic systems to guide 
+artistic work [11-14].  In our own recent work [1, 2] we have 
+utilized evolutionary computing techniques [5] to evolve virtual 
+populations of intelligent musical structures. Through the 
+implementation of software agents that exhibit local intelligence, 
+and are governed by a simple set of behaviors, we have 
+automatically generated music that is structurally rich, and 
+exhibits emergent properties.  We have had success with these 
+previous models, but while such systems are feasible in the realm 
+of software, their implementation is logistically impractical in 
+hardware.   
+ 
+As a consequence, we have looked to other generative 
+mechanisms that will exhibit these same dynamic behaviors in 
+this piece.  Inspired by water, we have modeled the distribution of 
+resources according to a real world water resource allocation 
+algorithm.  Kelman [7] proposes a number of sophisticated 
+mechanisms for market driven allocation algorithms.  However, 
+
+given the limited size of our network, and our desire to clearly 
+simulate this real world system, we chose to implement a simple, 
+yet practical model.  In Sustainable, each water consumer acts 
+selfishly and independently.  In accord with the principles 
+outlined below, there is no policing agent, and those ‘upstream’ in 
+this closed system have priority to use the quantity of water they 
+desire. 
+ 
+In our implementation of this allocation algorithm, we have 
+sought to preserve the key principles of more complex 
+evolutionary systems, and have implemented them in such a way 
+that the network will exhibit emergent and dynamic behavior, 
+while remaining practical and robust.  These principles are as 
+follows: 
+ 
+Each node of the network acts in an autonomous, selfish manner.  
+As will be described in Section 4, a simple set of deterministic 
+rules govern the behavior of the gong beating and illumination 
+state.  These are dictated by the relationship of the current water 
+level to the gong’s target water level.  Each gong acts selfishly, 
+and independently, either purging or conserving water to achieve 
+its target. 
+ 
+Players in the system require only rudimentary, local interactions.  
+In this network, the water gongs are linked to their two adjacent 
+neighbors via input and output water tubes.  There is no central 
+processing or sophisticated interaction between the gongs.  
+ 
+There must be critical mass to achieve dynamic and emergent 
+behavior.  As described above, there are practical limitations 
+when implementing a multi-node networked system in hardware.  
+We have implemented a network of seven gongs, and practical 
+experience has shown that this is a sufficient number that allows 
+the system to explore a wide variety of textures in both the sonic 
+and visual domains.  These outcomes are compelling, and given of 
+the number of variables and irregularities that are built into the 
+network, they cannot be predicted.  During the development 
+stages of the work, testing with only three nodes proved to be 
+insufficient number.  Though multiple states could be achieved, 
+transitions were abrupt and predictable.  Certainly, increasing the 
+network beyond seven nodes would produce even more varied 
+outcomes, and we hope to expand the size of the piece in our 
+future work. 
+ 
+
+Periods of both relative stability and instability are desirable.  In 
+time-based media such as music, tension can be created through 
+the introduction of distortions to normative, stable structures [3, 
+9].  In evolutionary systems, periods of stability often alternate 
+with periods of transition and instability [4, 10].  Our 
+implementation of the water resource-sharing algorithm exhibits 
+this same property, and allows for the realization of large-scale 
+forms that unfold over time.  The system will often become fixed 
+in a given state, as the interconnected nodes will be incapable of 
+changing states.  However, because the consumer’s water 
+demands will periodically change over time, the system will lurch 
+out of one state and sustain a period of transition before arriving at 
+a new period of stability.  This feature of the algorithm produces a 
+meta pulsing that is satisfying musically, aesthetically, and 
+conceptually. 
+
+ 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+161
+
+
+
+4. REALIZATION 
+Sustainable, is comprised of seven autonomous water gong nodes 
+that are networked via water tubes and modeled after real world 
+water consumers.  This section describes the features of the gongs 
+and details their individual behaviors. 
+ 
+
+4.1  Physical Construction 
+The individual nodes share the same basic design and behaviors, 
+including the following components: 
+ 
+
+ 
+
+Fig. 1. Individual water gong node 
+
+• A gong or tam-tam suspended over a tank of water 
+• An eight element float-switch mechanism to sense the current 
+
+water level in the tank 
+• Two solenoid beaters that strike the gong 
+• A submersible water pump whose output is linked to one 
+
+downstream neighbor (all pump at the same rate) 
+• An input water tube from one upstream neighbor 
+• A light under the water tank that illuminates the water surface 
+
+and gong 
+• Microprocessor (Atmel Mega16) and custom designed printed 
+
+circuit board with circuitry for sensing and control 
+ 
+Each component has been custom designed and fabricated by the 
+authors, and the nodes are intended to be physically functional as 
+musical instruments, and visually compelling. 
+ 
+Although, the basic functions of the nodes are identical, some 
+details are unique to the individual water gongs.  For example, 
+each gong is a different size and type.  We have used 9” and 13” 
+nipple gongs; 12”, 20”, and 24” tam-tams; and 14” and 18” wind 
+gongs.  The tank sizes, float switches, and mounting hardware 
+have been custom fit to suit these dimensions.  In addition, the 
+beater striking surfaces of each gong is unique in order to elicit 
+different timbres from each node.  These variations provide 
+critical variety and clarity to the choir of gongs and allow for a 
+broad range of possible timbres, frequencies, and composite 
+sonorities. 
+ 
+
+4.2 Individual Gong Behaviors 
+Each of the gongs behave according to a set of simple, 
+deterministic rules that include sensing of their current water 
+
+level, setting a target water level, purging or conserving water, 
+striking the gong, and illuminating the lamp.  These behaviors 
+model the actions of consumers in a water-sharing network such 
+as farmers or golf courses along a shared river.  Each node has a 
+cycle that is iterated perpetually, and control of these sensing and 
+actuation tasks is implemented on the microcontroller circuit 
+embedded within each water gong.  There are five steps to each 
+cycle: (1) sense the current water level, (2) update the water pump 
+state, (3) update the striking mode,  (4) update the lamp state, and 
+(5) if appropriate update the target water level (i.e., water need). 
+4.2.1 Sensing Current Water Level 
+At the beginning of each cycle, the gong will read the state of the 
+eight-level float switch mechanism to determine the current water 
+level in its tank.  This current water level will be subtracted from 
+the desired water level to determine whether its need is over, 
+under, or exactly met.  Just as farmers along a river desire to have 
+their water consumption equal to their target water need, if the 
+current and target levels are not equal, the gong will act 
+accordingly. 
+4.2.2 Update Water Pump State 
+If the current water level in a gong’s tank exceeds its need, it will 
+turn its water pump on to purge water. If the current level is below 
+its desired level, it will shutdown its pump in order to conserve 
+water. However, given that the gongs are connected only through 
+their pumps, the water level in a given tank is dependent on the 
+behavior of its upstream neighbor.  For example, if node n turns 
+its pump on in an effort to reduce its current volume, if upstream 
+node n-1, is simultaneously purging, because of the matched 
+pump rates in the network, water will simply flow through node n 
+with no change in its level.  Similarly, if node n turns its pump off 
+in hopes of raising its water level, it relies on overflow water from 
+node n-1 for the level to change. 
+4.2.3 Update Gong Striking Mode 
+There are four modes of gong striking: (1) silence, (2) sporadic 
+single strikes, (3) alternating strikes at a constant rate, and (4) 
+alternating strikes with an accelerating/decelerating rate.  The 
+gong striking mode reflects the distance of the current water level 
+to the target level.  As the current level approaches the target 
+water level, the striking mode will transition from state 1 – 4.  
+Thus, when the gong water level has met its target, it will be most 
+vigorously active, and it will be silent when it is distant from its 
+target. 
+4.2.4 Update the Illumination State 
+Inspired by the work of Hiroshi Ishii [6], we have implemented a 
+visual complement to the changing sonic aspect of the installation.  
+In relation to the distance of the gong’s water level from its target 
+level, a spotlight lamp below the water tank is switched either on 
+or off.  If the target level is attained, the lamp is turned off, and 
+otherwise the lamp is illuminated. This lamp illuminates ripples 
+on the surface of the water that change according to the 
+characteristics of the gong, the rate of beating, and the quantity of 
+water in the tank. In a darkened exhibition space, these water 
+patterns are project onto the ceiling by the lamp, yielding a soft, 
+ambient display of activity in the network. 
+4.2.5 Update the Target Water Level 
+Just as real world water demands will shift with changing seasons 
+and years, each gong node will periodically update its target water 
+level.  After a fixed set of cycles (approximately 150), the gong 
+node will update its target level to a new random number from 
+one to seven.  Each node shares the same random sequence, but 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+162
+
+
+
+through irregularities in the water networking, and depending on 
+initial conditions in the system, these updates will quickly phase 
+apart to the extent that new water demands cannot be anticipated. 
+
+5. CONCLUSIONS AND FUTURE WORK 
+We have described the concepts that underlie Sustainable, 
+articulated the principles that govern its evolution, detailed of the 
+realization of the system, and discussed the behavior of individual 
+water gongs.  The work was first shown in September of 2004.  It 
+was well received by viewers then, and has been successfully 
+shown in several exhibitions since that time.  Despite the 
+challenges posed by the realization of a compelling and dynamic, 
+robotic sound installation, we have been pleased with the 
+achievement of our goals, and encouraged by the outcomes of the 
+system. 
+ 
+In our future work, we intend to refine aspects of the model that 
+will lead to an even greater diversity of sonic and visual textures.  
+Firstly, we intend to explore more sophisticated resource 
+allocation models.  We will potentially borrow concepts of cost 
+and expense from economic theory to enrich the behaviors of the 
+modeled consumers.  Secondly, we plan to implement a sense of 
+history for each gong node.  Such a history that includes details of 
+how often target water levels are met, and which behaviors have 
+been expressed could open new possibilities for sonic and visual 
+forms to emerge over time.  Finally, we hope to construct more 
+water gongs to expand the installation beyond the existing seven 
+nodes. 
+
+6. MEDIA DOCUMENTATION 
+Extensive documentation of the design, development and final 
+realization of the piece can be found online at 
+http://ame2.asu.edu/faculty/dab/sustainable.php. Still images, 
+video clips, and diagrams are published that detail each stage of 
+the design process and outcomes. 
+ 
+
+7. ACKNOWLEDGEMENTS 
+We are grateful for generous support and encouragement from the 
+Arts, Media and Engineering program that has made this work 
+possible.  We are also grateful for invaluable enthusiasm, advice 
+and guidance from Assegid Kidané. 
+ 
+
+8. REFERENCES 
+[1] Birchfield, D.  Genetic Algorithm for the Evolution of 
+
+Feature Trajectories in Time-Dependent Arts. Proceedings 
+6th International Conference on Generative Art. Milan, Italy, 
+2003. 
+
+[2] Birchfield, D. Generative Model for the Creation of Musical 
+Emotion, Meaning, and Form, ACM SIGMM 2003 
+Workshop on Experiential Telepresence, Berkeley, CA, 
+2003. 
+
+[3] Cope, D.: Virtual Music: Computer Synthesis of Musical 
+Style.  The MIT Press, Cambridge, MA, 2001. 
+
+[4] Holland, J.: Adaptation in Natural and Artificial Systems, 
+University of Michigan, Ann Arbor, 1975. 
+
+[5] Husbands, P.: Distributed Coevolutionary Genetic 
+Algorithms for Multi-Criteria and Multi Constraint 
+Optimisation. Evolutionary Computing, AISB Workshop 
+150-165, 1994. 
+
+[6] Ishii, H. and Ullmer, B. Tangible bits: towards seamless 
+interfaces between people, bits and atoms. Proceedings of the 
+SIGCHI conference on Human factors in computing systems, 
+ACM Press: 234—241, 1997. 
+
+[7] Kelman, J. and Kelman, R. Water Allocation for Economic 
+Production in a Semi-arid Region. Water Resources 
+Development, Vol. 18, Issue 3, pgs 391-407, 2002. 
+
+[8] Lerdahl, F. and Jackendoff, R. A Generative Theory of Tonal 
+Music, Cambridge, MA, MIT Press, 1983. 
+
+[9] Meyer, L.B. Emotion and Meaning in Music. The University 
+of Chicago Press, London, 1956. 
+
+[10] Mitchell, M. An Introduction to Genetic Algorithms. MIT 
+Press, 1996. 
+
+[11] Nelson, G.L., Fractal Mountains.  Computer Music Currents, 
+vol. 10, 1992. 
+
+[12] Repetto, D. Crash and Bloom. 
+http://music.columbia.edu/~douglas/portfolio/crash_and_blo
+om, 2002. 
+
+[13] Sims, K.  Genetic Images. 
+http://www.genarts.com/karl/genetic-images.html, 1993 
+
+[14] Sims, K. Computer Graphics, 25(4), pp. 319-328, 1991. 
+ 
+ 
+
+ 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+163
+
+
+ 
+
+ -+-+-+-+-+-+-+- 
+  
+This paper details the motivations, design, and realization of 
+Sustainable, a dynamic, robotic sound installation that employs a 
+generative algorithm for music and sound creation.  The piece is 
+comprised of seven autonomous water gong nodes that are 
+networked together by water tubes to distribute water throughout 
+the system.  A water resource allocation algorithm guides this 
+distribution process and produces an ever-evolving sonic and 
+visual texture.  A simple set of behaviors govern the individual 
+gongs, and the system as a whole exhibits emergent properties 
+that yield local and large scale forms in sound and light. 
+
+ 
+
+  
+ END OF nime_archive/web/2005/nime2005_160.pdf
+
+
