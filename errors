@@ -1,0 +1,499 @@
+
+-- SOMTEHING IS MISSING--
+ IN FILE: nime_archive/web/2005/nime2005_160.pdf 
+
+--COULD NOT EXTRACT KEYWORDS--
+HERE IS THE TEXT: 
+ 
+Sustainable: a dynamic, robotic, sound installation 
+David Birchfield 
+
+Arts, Media and Engineering 
+Arizona State University 
+
+Tempe, AZ 85287 
+1.480.965-3155 
+
+dbirchfield@asu.edu 
+
+David Lorig 
+Arts, Media and Engineering 
+
+Arizona State University 
+Tempe, AZ 85287 
+1.480.965-3155 
+
+david.lorig@asu.edu 
+
+Kelly Phillips 
+Arts, Media and Engineering 
+
+Arizona State University 
+Tempe, AZ 85287 
+1.480.965-3155 
+
+crowbar@asu.edu 
+ 
+ 
+
+ABSTRACT 
+This paper details the motivations, design, and realization of 
+Sustainable, a dynamic, robotic sound installation that employs a 
+generative algorithm for music and sound creation.  The piece is 
+comprised of seven autonomous water gong nodes that are 
+networked together by water tubes to distribute water throughout 
+the system.  A water resource allocation algorithm guides this 
+distribution process and produces an ever-evolving sonic and 
+visual texture.  A simple set of behaviors govern the individual 
+gongs, and the system as a whole exhibits emergent properties 
+that yield local and large scale forms in sound and light. 
+
+Keywords 
+Music, Sound, Robotics, Generative Arts, Evolutionary 
+Computing, Dynamic Systems, Sculpture, Installation Art. 
+
+1. INTRODUCTION 
+Sustainable, is a dynamic, autonomous, robotic installation that is 
+comprised of a network of seven independent water gongs (see 
+Fig. 1).  The network models a water resource allocation 
+algorithm that yields a perpetual evolution of the sonic, visual, 
+and timbral aspects of the installation.  Each gong node functions 
+independently and autonomously, but through their simple 
+interactions, the system as a whole exhibits dynamic, emergent 
+behaviors that unfold over time. 
+ 
+
+A water gong is a musical gong that is dipped into a tank of water.  
+As the gong is partially submersed, the water alters the resonant 
+properties of the metal such that the sounding frequency of the 
+gong descends as it is immersed below the water’s surface.  This 
+instrumental effect is employed by composers of contemporary 
+music, as it’s shifting glissandi and timbres produces an intriguing 
+and distinct sound.   
+
+ 
+Fig. 1. Portion of the gong network 
+
+We have built a collection of robotic water gongs, each with two 
+solenoid beaters that strike a gong that is fixed above a water tank.  
+Rather than raising and lowering the gong itself, we raise and 
+lower the water level in the tank with water pumps to produce the 
+desired effect.  Lamps positioned below the transparent tanks 
+illuminate patterns on the surface of the water as it ripples and 
+splashes.  Each gong has one upstream and one downstream 
+neighbor, and the gongs are networked together with water tubes.  
+Thus, water is distributed throughout the system, and as the gongs 
+resonate above the ever shifting water levels, chords and rhythms 
+emerge that reflect the state of the population.  A water resource 
+sharing algorithm governs the global behavior of the system, and 
+each water gong node is modeled as a water consumer with 
+individual needs and behaviors. 
+ 
+This paper describes the goals and outcomes of the design and 
+realization of this work. In Section 2 we outline the important 
+themes and concepts that inform the aesthetic aspects of the work.  
+Section 3 discusses the generative algorithm that governs the 
+system.  In Section 4 we describe the construction and behaviors 
+of the individual gongs.  Finally we discuss the results of this 
+work, and outline directions for future work. 
+
+2. KEY THEMES AND CONCEPTS 
+A number of themes and concepts inform the design and 
+realization of this installation.  These concepts are reflected in the 
+sonic and visual materials that comprise the piece, and in the 
+technologies and algorithms that influence its behavior. 
+
+Permission to make digital or hard copies of all or part of this work for 
+personal or classroom use is granted without fee provided that copies are 
+not made or distributed for profit or commercial advantage and that 
+copies bear this notice and the full citation on the first page. To copy 
+otherwise, or republish, to post on servers or to redistribute to lists, 
+requires prior specific permission and/or a fee. 
+Nime’05, May 26-28, , 2005, Vancouver, BC, Canada. 
+Copyright remains with the author(s). 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+160
+
+
+
+ 
+Water is an important force and metaphor.  As residents of the 
+western United States, where water rights and access are critically 
+important, we are driven to address this issue in our work.  The 
+implementation of a real world water resource-sharing algorithm 
+reflects this influence.  In addition, the network of water gongs 
+share a limited resource of water, and its perpetual re-allocation 
+between the members of the system models the shifts of natural, 
+cultural, and intellectual resources throughout the networks of our 
+local and global communities.  The installation is intended to 
+highlight the interconnected nature of our social and physical 
+environments.  Finally, water serves as the means of 
+communication between nodes in the network.  This anachronistic 
+mechanism references the use of waterways as the traditional 
+vehicle for communication and transportation. 
+ 
+
+We explore the relationship between organic materials and 
+technology in robotics, and seek to balance these forces in the 
+piece.  An important design principle for the work is that the 
+technology should be downplayed rather than fetish-ized. This 
+concept informs the decision to have the sound and sonic events 
+originate from 'natural' (e.g., striking the physical gongs) and not 
+electronic sources. Similarly, the technology is present in the 
+background of the piece, thus allowing the audience to focus on 
+the organic aspects of the work.  The use of organic materials as 
+core components of the evolutionary algorithm also introduces 
+desirable irregularities that often yield interesting and compelling 
+results as in biological evolutionary systems. 
+ 
+The evolution of sonic and visual materials addresses the passage 
+of time on multiple levels.  Through the influence of the 
+evolutionary model, shifts in texture and sound unfold at a gradual 
+rate.  At the local level, viewers of the piece can experience 
+transitions by focusing their attention on the actions of individual 
+water gongs.  At the global level, viewers can appreciate the more 
+gradual sonic and visual transitions of the system as activity and 
+textures will shift around the network, and diverse composite 
+sonorities will emerge.  In addition, the generative algorithm 
+produces alternating modes of stability and instability that yield 
+large-scale meta-pulses in the resulting sound. 
+
+3. DYNAMIC SYSTEM BEHAVIOR 
+Sustainable is influenced by related works in both music and the 
+visual arts that utilize models of natural dynamic systems to guide 
+artistic work [11-14].  In our own recent work [1, 2] we have 
+utilized evolutionary computing techniques [5] to evolve virtual 
+populations of intelligent musical structures. Through the 
+implementation of software agents that exhibit local intelligence, 
+and are governed by a simple set of behaviors, we have 
+automatically generated music that is structurally rich, and 
+exhibits emergent properties.  We have had success with these 
+previous models, but while such systems are feasible in the realm 
+of software, their implementation is logistically impractical in 
+hardware.   
+ 
+As a consequence, we have looked to other generative 
+mechanisms that will exhibit these same dynamic behaviors in 
+this piece.  Inspired by water, we have modeled the distribution of 
+resources according to a real world water resource allocation 
+algorithm.  Kelman [7] proposes a number of sophisticated 
+mechanisms for market driven allocation algorithms.  However, 
+
+given the limited size of our network, and our desire to clearly 
+simulate this real world system, we chose to implement a simple, 
+yet practical model.  In Sustainable, each water consumer acts 
+selfishly and independently.  In accord with the principles 
+outlined below, there is no policing agent, and those ‘upstream’ in 
+this closed system have priority to use the quantity of water they 
+desire. 
+ 
+In our implementation of this allocation algorithm, we have 
+sought to preserve the key principles of more complex 
+evolutionary systems, and have implemented them in such a way 
+that the network will exhibit emergent and dynamic behavior, 
+while remaining practical and robust.  These principles are as 
+follows: 
+ 
+Each node of the network acts in an autonomous, selfish manner.  
+As will be described in Section 4, a simple set of deterministic 
+rules govern the behavior of the gong beating and illumination 
+state.  These are dictated by the relationship of the current water 
+level to the gong’s target water level.  Each gong acts selfishly, 
+and independently, either purging or conserving water to achieve 
+its target. 
+ 
+Players in the system require only rudimentary, local interactions.  
+In this network, the water gongs are linked to their two adjacent 
+neighbors via input and output water tubes.  There is no central 
+processing or sophisticated interaction between the gongs.  
+ 
+There must be critical mass to achieve dynamic and emergent 
+behavior.  As described above, there are practical limitations 
+when implementing a multi-node networked system in hardware.  
+We have implemented a network of seven gongs, and practical 
+experience has shown that this is a sufficient number that allows 
+the system to explore a wide variety of textures in both the sonic 
+and visual domains.  These outcomes are compelling, and given of 
+the number of variables and irregularities that are built into the 
+network, they cannot be predicted.  During the development 
+stages of the work, testing with only three nodes proved to be 
+insufficient number.  Though multiple states could be achieved, 
+transitions were abrupt and predictable.  Certainly, increasing the 
+network beyond seven nodes would produce even more varied 
+outcomes, and we hope to expand the size of the piece in our 
+future work. 
+ 
+
+Periods of both relative stability and instability are desirable.  In 
+time-based media such as music, tension can be created through 
+the introduction of distortions to normative, stable structures [3, 
+9].  In evolutionary systems, periods of stability often alternate 
+with periods of transition and instability [4, 10].  Our 
+implementation of the water resource-sharing algorithm exhibits 
+this same property, and allows for the realization of large-scale 
+forms that unfold over time.  The system will often become fixed 
+in a given state, as the interconnected nodes will be incapable of 
+changing states.  However, because the consumer’s water 
+demands will periodically change over time, the system will lurch 
+out of one state and sustain a period of transition before arriving at 
+a new period of stability.  This feature of the algorithm produces a 
+meta pulsing that is satisfying musically, aesthetically, and 
+conceptually. 
+
+ 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+161
+
+
+
+4. REALIZATION 
+Sustainable, is comprised of seven autonomous water gong nodes 
+that are networked via water tubes and modeled after real world 
+water consumers.  This section describes the features of the gongs 
+and details their individual behaviors. 
+ 
+
+4.1  Physical Construction 
+The individual nodes share the same basic design and behaviors, 
+including the following components: 
+ 
+
+ 
+
+Fig. 1. Individual water gong node 
+
+• A gong or tam-tam suspended over a tank of water 
+• An eight element float-switch mechanism to sense the current 
+
+water level in the tank 
+• Two solenoid beaters that strike the gong 
+• A submersible water pump whose output is linked to one 
+
+downstream neighbor (all pump at the same rate) 
+• An input water tube from one upstream neighbor 
+• A light under the water tank that illuminates the water surface 
+
+and gong 
+• Microprocessor (Atmel Mega16) and custom designed printed 
+
+circuit board with circuitry for sensing and control 
+ 
+Each component has been custom designed and fabricated by the 
+authors, and the nodes are intended to be physically functional as 
+musical instruments, and visually compelling. 
+ 
+Although, the basic functions of the nodes are identical, some 
+details are unique to the individual water gongs.  For example, 
+each gong is a different size and type.  We have used 9” and 13” 
+nipple gongs; 12”, 20”, and 24” tam-tams; and 14” and 18” wind 
+gongs.  The tank sizes, float switches, and mounting hardware 
+have been custom fit to suit these dimensions.  In addition, the 
+beater striking surfaces of each gong is unique in order to elicit 
+different timbres from each node.  These variations provide 
+critical variety and clarity to the choir of gongs and allow for a 
+broad range of possible timbres, frequencies, and composite 
+sonorities. 
+ 
+
+4.2 Individual Gong Behaviors 
+Each of the gongs behave according to a set of simple, 
+deterministic rules that include sensing of their current water 
+
+level, setting a target water level, purging or conserving water, 
+striking the gong, and illuminating the lamp.  These behaviors 
+model the actions of consumers in a water-sharing network such 
+as farmers or golf courses along a shared river.  Each node has a 
+cycle that is iterated perpetually, and control of these sensing and 
+actuation tasks is implemented on the microcontroller circuit 
+embedded within each water gong.  There are five steps to each 
+cycle: (1) sense the current water level, (2) update the water pump 
+state, (3) update the striking mode,  (4) update the lamp state, and 
+(5) if appropriate update the target water level (i.e., water need). 
+4.2.1 Sensing Current Water Level 
+At the beginning of each cycle, the gong will read the state of the 
+eight-level float switch mechanism to determine the current water 
+level in its tank.  This current water level will be subtracted from 
+the desired water level to determine whether its need is over, 
+under, or exactly met.  Just as farmers along a river desire to have 
+their water consumption equal to their target water need, if the 
+current and target levels are not equal, the gong will act 
+accordingly. 
+4.2.2 Update Water Pump State 
+If the current water level in a gong’s tank exceeds its need, it will 
+turn its water pump on to purge water. If the current level is below 
+its desired level, it will shutdown its pump in order to conserve 
+water. However, given that the gongs are connected only through 
+their pumps, the water level in a given tank is dependent on the 
+behavior of its upstream neighbor.  For example, if node n turns 
+its pump on in an effort to reduce its current volume, if upstream 
+node n-1, is simultaneously purging, because of the matched 
+pump rates in the network, water will simply flow through node n 
+with no change in its level.  Similarly, if node n turns its pump off 
+in hopes of raising its water level, it relies on overflow water from 
+node n-1 for the level to change. 
+4.2.3 Update Gong Striking Mode 
+There are four modes of gong striking: (1) silence, (2) sporadic 
+single strikes, (3) alternating strikes at a constant rate, and (4) 
+alternating strikes with an accelerating/decelerating rate.  The 
+gong striking mode reflects the distance of the current water level 
+to the target level.  As the current level approaches the target 
+water level, the striking mode will transition from state 1 – 4.  
+Thus, when the gong water level has met its target, it will be most 
+vigorously active, and it will be silent when it is distant from its 
+target. 
+4.2.4 Update the Illumination State 
+Inspired by the work of Hiroshi Ishii [6], we have implemented a 
+visual complement to the changing sonic aspect of the installation.  
+In relation to the distance of the gong’s water level from its target 
+level, a spotlight lamp below the water tank is switched either on 
+or off.  If the target level is attained, the lamp is turned off, and 
+otherwise the lamp is illuminated. This lamp illuminates ripples 
+on the surface of the water that change according to the 
+characteristics of the gong, the rate of beating, and the quantity of 
+water in the tank. In a darkened exhibition space, these water 
+patterns are project onto the ceiling by the lamp, yielding a soft, 
+ambient display of activity in the network. 
+4.2.5 Update the Target Water Level 
+Just as real world water demands will shift with changing seasons 
+and years, each gong node will periodically update its target water 
+level.  After a fixed set of cycles (approximately 150), the gong 
+node will update its target level to a new random number from 
+one to seven.  Each node shares the same random sequence, but 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+162
+
+
+
+through irregularities in the water networking, and depending on 
+initial conditions in the system, these updates will quickly phase 
+apart to the extent that new water demands cannot be anticipated. 
+
+5. CONCLUSIONS AND FUTURE WORK 
+We have described the concepts that underlie Sustainable, 
+articulated the principles that govern its evolution, detailed of the 
+realization of the system, and discussed the behavior of individual 
+water gongs.  The work was first shown in September of 2004.  It 
+was well received by viewers then, and has been successfully 
+shown in several exhibitions since that time.  Despite the 
+challenges posed by the realization of a compelling and dynamic, 
+robotic sound installation, we have been pleased with the 
+achievement of our goals, and encouraged by the outcomes of the 
+system. 
+ 
+In our future work, we intend to refine aspects of the model that 
+will lead to an even greater diversity of sonic and visual textures.  
+Firstly, we intend to explore more sophisticated resource 
+allocation models.  We will potentially borrow concepts of cost 
+and expense from economic theory to enrich the behaviors of the 
+modeled consumers.  Secondly, we plan to implement a sense of 
+history for each gong node.  Such a history that includes details of 
+how often target water levels are met, and which behaviors have 
+been expressed could open new possibilities for sonic and visual 
+forms to emerge over time.  Finally, we hope to construct more 
+water gongs to expand the installation beyond the existing seven 
+nodes. 
+
+6. MEDIA DOCUMENTATION 
+Extensive documentation of the design, development and final 
+realization of the piece can be found online at 
+http://ame2.asu.edu/faculty/dab/sustainable.php. Still images, 
+video clips, and diagrams are published that detail each stage of 
+the design process and outcomes. 
+ 
+
+7. ACKNOWLEDGEMENTS 
+We are grateful for generous support and encouragement from the 
+Arts, Media and Engineering program that has made this work 
+possible.  We are also grateful for invaluable enthusiasm, advice 
+and guidance from Assegid Kidané. 
+ 
+
+8. REFERENCES 
+[1] Birchfield, D.  Genetic Algorithm for the Evolution of 
+
+Feature Trajectories in Time-Dependent Arts. Proceedings 
+6th International Conference on Generative Art. Milan, Italy, 
+2003. 
+
+[2] Birchfield, D. Generative Model for the Creation of Musical 
+Emotion, Meaning, and Form, ACM SIGMM 2003 
+Workshop on Experiential Telepresence, Berkeley, CA, 
+2003. 
+
+[3] Cope, D.: Virtual Music: Computer Synthesis of Musical 
+Style.  The MIT Press, Cambridge, MA, 2001. 
+
+[4] Holland, J.: Adaptation in Natural and Artificial Systems, 
+University of Michigan, Ann Arbor, 1975. 
+
+[5] Husbands, P.: Distributed Coevolutionary Genetic 
+Algorithms for Multi-Criteria and Multi Constraint 
+Optimisation. Evolutionary Computing, AISB Workshop 
+150-165, 1994. 
+
+[6] Ishii, H. and Ullmer, B. Tangible bits: towards seamless 
+interfaces between people, bits and atoms. Proceedings of the 
+SIGCHI conference on Human factors in computing systems, 
+ACM Press: 234—241, 1997. 
+
+[7] Kelman, J. and Kelman, R. Water Allocation for Economic 
+Production in a Semi-arid Region. Water Resources 
+Development, Vol. 18, Issue 3, pgs 391-407, 2002. 
+
+[8] Lerdahl, F. and Jackendoff, R. A Generative Theory of Tonal 
+Music, Cambridge, MA, MIT Press, 1983. 
+
+[9] Meyer, L.B. Emotion and Meaning in Music. The University 
+of Chicago Press, London, 1956. 
+
+[10] Mitchell, M. An Introduction to Genetic Algorithms. MIT 
+Press, 1996. 
+
+[11] Nelson, G.L., Fractal Mountains.  Computer Music Currents, 
+vol. 10, 1992. 
+
+[12] Repetto, D. Crash and Bloom. 
+http://music.columbia.edu/~douglas/portfolio/crash_and_blo
+om, 2002. 
+
+[13] Sims, K.  Genetic Images. 
+http://www.genarts.com/karl/genetic-images.html, 1993 
+
+[14] Sims, K. Computer Graphics, 25(4), pp. 319-328, 1991. 
+ 
+ 
+
+ 
+
+Proceedings of the 2005 International Conference on New Interfaces for Musical Expression (NIME05), Vancouver, BC, Canada
+
+163
+
+
+ 
+
+ -+-+-+-+-+-+-+- 
+  
+This paper details the motivations, design, and realization of 
+Sustainable, a dynamic, robotic sound installation that employs a 
+generative algorithm for music and sound creation.  The piece is 
+comprised of seven autonomous water gong nodes that are 
+networked together by water tubes to distribute water throughout 
+the system.  A water resource allocation algorithm guides this 
+distribution process and produces an ever-evolving sonic and 
+visual texture.  A simple set of behaviors govern the individual 
+gongs, and the system as a whole exhibits emergent properties 
+that yield local and large scale forms in sound and light. 
+
+ 
+
+  
+ END OF nime_archive/web/2005/nime2005_160.pdf
+
+

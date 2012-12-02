@@ -13,6 +13,7 @@ import os
 import re
 import subprocess
 import pprint
+from lxml import etree
 
 SEARCHSTRING = re.compile('abstract(.*)keywords(.*)introduction', flags=re.MULTILINE | re.IGNORECASE | re.DOTALL)
 
@@ -72,6 +73,8 @@ class PdfDoc:
     return True    
 
 
+    
+
 
 #
 # Program starts executing here
@@ -94,6 +97,56 @@ for folder in os.listdir(dir_path):
         except Exception as e:
           print "Could not open file: %s, %s" % (workfile,e)
         inputfile.close()
+        
+
+## Everything is read, parsed and initially processed. Now its exported
+result = open("result.xml","w")
+errors = open("errors.txt","w")
+
+# create XML 
+root = etree.Element('documents')
+
+for doc in documents: 
+  document = etree.Element('document')
+  #create the name-node
+  name = etree.Element('name')
+  name.text = doc.filename
+  document.append(name)
+  
+  #If missing either of abstract or keywords
+  if not doc.extracted_abstract or not doc.extracted_keywords: 
+    missing_error = "\n-- SOMTEHING IS MISSING--\n IN FILE: %s \n" % doc.filename
+    errors.write(missing_error)
+    
+  
+    #if abstract is present
+    if doc.extracted_abstract: 
+      abstract = etree.Element('abstract')
+      abstract.text = doc.abstract
+      document.append(abstract)
+    else:
+      abstract_error = "\n--COULD NOT EXTRACT ABSTRACT--\n"
+      errors.write(abstract_error)
+  
+    #if keywords are present
+    if doc.extracted_keywords:
+      keywords = etree.Element('keywords')
+      keywords.text = doc.keywords
+      document.append(keywords)
+    else: 
+      abstract_error = "\n--COULD NOT EXTRACT KEYWORDS--\n"
+      errors.write(abstract_error)
+    
+      give_text = "HERE IS THE TEXT: \n %s \n\n -+-+-+-+-+-+-+- \n %s \n\n %s \n END OF %s\n\n\n" % (doc.text, doc.abstract, doc.keywords, doc.filename)
+      errors.write(give_text)
+    
+  # Appending the final document to the root
+  root.append(document)
+
+# pretty string
+s = etree.tostring(root, pretty_print=True)
+print s
+
 
 
 
