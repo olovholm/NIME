@@ -17,8 +17,6 @@ import subprocess
 abstract_word = "abstract"
 introduction_word = {"intro", "introduction"}
 SEARCHSTRING = re.compile('(abstract)(.*)(keywords)(.*)(INTRODUCTION)', flags=re.MULTILINE | re.IGNORECASE)
-MACROSTRING = re.compile('(abstract)([\w\s]*)(keywords)([\w\s]*)(INTRODUCTION)', flags=re.MULTILINE | re.IGNORECASE)
-CASESTRING = re.compile('(ABSTRACT)(.*)(keywords)(.*)(INTRODUCTION)', flags=re.MULTILINE)
 
 dir_path = "nime_archive/web/"
 pdf_array = []
@@ -129,12 +127,6 @@ class PdfDoc:
       return True
     else:
       return False
-      
-    
-      
-
-
-
 
 
 for folder in os.listdir(dir_path):
@@ -145,9 +137,13 @@ for folder in os.listdir(dir_path):
         workfile = dir_path + folder + "/"+ infile
         try:
           inputfile = file(workfile, "rb")
-          input1 = PdfFileReader(inputfile)
-          pdf = PdfDoc(input1, infile)
-          pdf_array.append(pdf)
+          print workfile
+          proc = subprocess.Popen(["java","-jar","tika-app-1.2.jar", workfile,"--text"],stdout=subprocess.PIPE)
+          text =  proc.stdout.read()
+          print text
+          #input1 = PdfFileReader(inputfile)
+          #pdf = PdfDoc(input1, infile)
+          #pdf_array.append(pdf)
         except Exception as e:
           print "Could not open file: %s, %s" % (workfile,e)
         inputfile.close()
