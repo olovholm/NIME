@@ -1,3 +1,5 @@
 nime_archive/*
 nime_archive
 nime_backup.tar.gz
+*.jar
+*.tar.gz
