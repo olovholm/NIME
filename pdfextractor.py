@@ -19,6 +19,7 @@ SEARCHSTRING = re.compile('abstract(.*)keywords(.*)introduction', flags=re.MULTI
 
 dir_path = "nime_archive/web/"
 documents = []
+diffsigns = {'”':'"', '“':'"', "’":"'",'• ':'-'}
 
 
 #
@@ -30,13 +31,14 @@ class PdfDoc:
   def __init__(self, filename, text):
     self.filename = filename
     self.text = text
+    self.remove_difficult_chars()
     self.extracted_abstract = False
     self.extracted_keywords = False
     self.abstract = ""
     self.keywords = ""
     self.extractor()
     self.clean_keywords()
-    self.remove_difficult_chars()
+    
 
   def extractor(self):
     val = self.extract(self.text)
@@ -72,7 +74,12 @@ class PdfDoc:
   
   def remove_difficult_chars(self):
     #See if there is a method which prints the non-valid characters, make a replace function here. 
-    return True    
+    #Use dictionary defined in beginning of file to change characters
+    text = self.text
+    for i, j in diffsigns.iteritems():
+      text = text.replace(i,j)
+    self.text = text
+      
 
 
     
@@ -160,7 +167,7 @@ for doc in documents:
 
 # pretty string
 s = etree.tostring(root, pretty_print=True)
-print s
+result.write(s)
 
 
 
