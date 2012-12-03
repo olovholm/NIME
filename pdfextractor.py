@@ -49,6 +49,7 @@ class PdfDoc:
       self.abstract = splits[0][0]
       self.extracted_abstract = True
       self.extracted_keywords = False
+      print "Just found one text. Potential pitfall in %s" % self.filename
     elif len(splits[0]) == 2:
       self.abstract = splits[0][0]
       self.extracted_abstract = True
@@ -69,7 +70,8 @@ class PdfDoc:
       self.keywords = self.keywords.replace("1.","")
       self.keywords = self.keywords.replace("\n"," ")
   
-  def remove_difficult_chars(self): 
+  def remove_difficult_chars(self):
+    #See if there is a method which prints the non-valid characters, make a replace function here. 
     return True    
 
 
@@ -126,7 +128,7 @@ for doc in documents:
       abstract.text = doc.abstract
       document.append(abstract)
     except ValueError:
-      xml_error = "\n --COULD NOT PRINT TEXT TO XML DUE TO VALUE ERROR -- \n"
+      xml_error = "\n --COULD NOT PRINT ABSTRACT TEXT TO XML DUE TO VALUE ERROR -- \n"
       doc.extracted_abstract = False
       errors.write(xml_error)
   else:
@@ -135,9 +137,14 @@ for doc in documents:
   
   #if keywords are present
   if doc.extracted_keywords:
-    keywords = etree.Element('keywords')
-    keywords.text = doc.keywords
-    document.append(keywords)
+    try:
+      keywords = etree.Element('keywords')
+      keywords.text = doc.keywords
+      document.append(keywords)
+    except ValueError:
+      xml_error = "\n --COULD NOT PRINT KEYWORDS TEXT TO XML DUE TO VALUE ERROR -- \n"
+      doc.extracted_keywords = False
+      errors.write(xml_error)
   else: 
     abstract_error = "\n--COULD NOT EXTRACT KEYWORDS--\n"
     errors.write(abstract_error)
