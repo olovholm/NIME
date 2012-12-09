@@ -16,6 +16,8 @@ import pprint
 from lxml import etree
 
 SEARCHSTRING = re.compile('abstract(.*)keywords(.*)introduction', flags=re.MULTILINE | re.IGNORECASE | re.DOTALL)
+#Need to implement a way of getting just the nime-identificator
+INFILESTRING = re.compile('(nime\d{4}_\d{3}\.pdf)')
 
 dir_path = "nime_archive/web/"
 documents = []
@@ -29,7 +31,8 @@ diffsigns = {'”':'"', '“':'"', "’":"'",'• ':'-'}
 class PdfDoc:
   #Instanciates the PdfDoc object. Reads the file and sets the producer-variable
   def __init__(self, filename, text):
-    self.filename = filename
+    self.filename = re.findall(INFILESTRING,filename)[0]
+    print self.filename
     self.text = text
     self.remove_difficult_chars()
     self.extracted_abstract = False
@@ -108,9 +111,22 @@ for folder in os.listdir(dir_path):
         inputfile.close()
         
 
+
+num_elements = len(documents)
+abstract_error = 0
+keywords_error = 0
+missing_error = 0
+xml_error = 0
+missing_files = []
+abstract_files = []
+keywords_files = []
+xml_files = []
+
+
 ## Everything is read, parsed and initially processed. Now its exported
 result = open("result.xml","w")
 errors = open("errors.txt","w")
+stats = open("stats.txt","w")
 
 # create XML 
 root = etree.Element('documents')
@@ -126,6 +142,8 @@ for doc in documents:
   if not doc.extracted_abstract or not doc.extracted_keywords: 
     missing_error = "\n-- SOMTEHING IS MISSING--\n IN FILE: %s \n" % doc.filename
     errors.write(missing_error)
+    missing_error += 1
+    missing_files.append(doc.filename)
     
   
   #if abstract is present
@@ -138,9 +156,13 @@ for doc in documents:
       xml_error = "\n --COULD NOT PRINT ABSTRACT TEXT TO XML DUE TO VALUE ERROR -- \n"
       doc.extracted_abstract = False
       errors.write(xml_error)
+      xml_error += 1
+      xml_files.append(doc.filename)
   else:
     abstract_error = "\n--COULD NOT EXTRACT ABSTRACT--\n"
     errors.write(abstract_error)
+    abstract_error += 1
+    abstract_files.append(doc.filename)
   
   #if keywords are present
   if doc.extracted_keywords:
@@ -152,9 +174,13 @@ for doc in documents:
       xml_error = "\n --COULD NOT PRINT KEYWORDS TEXT TO XML DUE TO VALUE ERROR -- \n"
       doc.extracted_keywords = False
       errors.write(xml_error)
+      xml_error += 1
+      xml_files.append(doc.filename)
   else: 
-    abstract_error = "\n--COULD NOT EXTRACT KEYWORDS--\n"
-    errors.write(abstract_error)
+    keyword_error = "\n--COULD NOT EXTRACT KEYWORDS--\n"
+    errors.write(keyword_error)
+    keywords_error += 1
+    xml_files.append(doc.filename)
     
       
   #Prints the whole text to error log
@@ -168,6 +194,21 @@ for doc in documents:
 # pretty string
 s = etree.tostring(root, pretty_print=True)
 result.write(s)
+
+
+num_elements = len(documents)
+abstract_error = 0
+keywords_error = 0
+missing_error = 0
+xml_error = 0
+
+missing_str = ', '.join(missing_files)
+abstract_str = ', '.join(abstract_files)
+keywords_str = ', '.join(keywords_files)
+xml_str = ', '.join(xml_files)
+
+totalstr = "RESULTS FROM RUN: \nTotal elements: %s\nabstract errors: %s\nkeywords errors: %s\nmissing errors: %s\nxml errors: %s\n\nFILES IN WHICH SOMETHING IS MISSING: \nmissing: \n %s\n\n\n\n\nabstract: \n %s\n\n\n\n\nkeywords: \n %s\n\n\n\n\nxml: \n %s\n\n\n\n" % (num_elements, abstract_error, keywords_error, missing_error, xml_error, missing_str, abstract_str, keywords_str, xml_str)
+
 
 
 
