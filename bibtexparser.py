@@ -61,12 +61,14 @@ class Bibfile:
 
          if res > 0:
            if results[res[0]]['abstract']:
-             abs_holder = {'abstract': results[res[0]]['abstract']}
+             #abs_holder = {'abstract': }
+             self.bibs.entries[a]['abstract'] = results[res[0]]['abstract']
            else:
              print "Error: no abstract key in %s" % res
            #bibs.entries[a]['abstract'] = 
            if results[res[0]]['abstract']:
-               key_holder = {'keywords':results[res[0]]['keywords']}
+               #key_holder = {'keywords':results[res[0]]['keywords']}
+               self.bibs.entries[a]['abstract'] = results[res[0]]['keywords']
            else:
              print "Error: no keywords key in %s" % res
            #print res[0]
