@@ -52,18 +52,19 @@ def seekread():
         elements = {}
         doc = open(dir_path+infile).read()
         i = 0
-        #while i>-1:
-        i = doc.find('{',i)
-        nameend = i+1
-        while not doc[nameend].isspace() and doc[nameend] != ',':
-          nameend = nameend + 1
-        print doc[i+1:nameend]
-        j = readbraces(i+1,doc)
-        while i >-1:
-          i, key, val= readelement(i,doc)
-          if i < 0:
-            break
-          elements[key] = val
+        while i>-1:
+          element = {}
+          i = doc.find('{',i)
+          nameend = i+1
+          while not doc[nameend].isspace() and doc[nameend] != ',':
+            nameend = nameend + 1
+          #print doc[i+1:nameend]
+          j = readbraces(i+1,doc)
+          while i >-1:
+            i, key, val= readelement(i,doc)
+            if i < 0:
+              break
+            element[key] = val
           '''
           k = readnontoken(i+1, doc)
           if doc[k].isalpha():
@@ -75,8 +76,16 @@ def seekread():
             k = readbraces(i+1, doc)
             print doc[i:k]
             '''
-        print elements
-        i = j 
+          #print "HER:",element
+          try:
+            print element["url"]
+          except KeyError as e:
+            print e
+          elements.update(element)
+          i = j
+
+
+          
         
 def readbraces(i, doc):
   inn = doc.find('{',i)
