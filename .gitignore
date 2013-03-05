@@ -6,5 +6,6 @@ nime_backup.tar.gz
 nime_archive_proper
 nime_archive*
 *nime_archive
+output*
 *.jar
 *.tar.gz

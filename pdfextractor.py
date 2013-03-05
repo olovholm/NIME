@@ -17,7 +17,8 @@ from lxml import etree
 
 SEARCHSTRING = re.compile('abstract(.*)keywords(.*)introduction', flags=re.MULTILINE | re.IGNORECASE | re.DOTALL)
 #Need to implement a way of getting just the nime-identificator
-INFILESTRING = re.compile('(nime\d{4}_\d{3}\.pdf)')
+if URL_PATTERN.match(element["url"]):
+  URL_PATTERN.match(element["url"])[0]RING = re.compile('(nime\d{4}_\d{3}\.pdf)')
 
 dir_path = "nime_archive/web/"
 documents = []
