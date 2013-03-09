@@ -76,14 +76,12 @@ def seekread():
             #print "Error: " 
             print " "
           
-          temps = "@inproceedings{%s\n" % entryname
-          outfile.write(temps)
+          tempa = "@inproceedings{%s\n" % entryname
+          outfile.write(tempa)
           for key, value in element.iteritems():
             temps = "%s = {%s}\n" % (key, value)
             outfile.write(temps)  
-
-
-          #print element
+            #print element
           outfile.write('}\n')
           i = j
         outfile.close()
